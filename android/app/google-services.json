@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "607579615785",
+    "firebase_url": "https://yaanyo-4bf7e.firebaseio.com",
+    "project_id": "yaanyo-4bf7e",
+    "storage_bucket": "yaanyo-4bf7e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607579615785:android:17e75e8188ff83fce86238",
+        "android_client_info": {
+          "package_name": "com.khalidwar.yaanyo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607579615785-jmgu6g6g8dql9fmu1qvrh24ls9elnbap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCns_mKtC6fhIDQqS7EkHZpPh9v5u3ILhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607579615785-jmgu6g6g8dql9fmu1qvrh24ls9elnbap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
