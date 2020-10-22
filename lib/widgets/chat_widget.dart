@@ -3,35 +3,40 @@ import 'package:flutter/material.dart';
 class ChatWidget extends StatelessWidget {
   const ChatWidget({
     Key key,
+    this.name,
+    this.lastMessage,
+    this.avatar,
+    this.onPress,
   }) : super(key: key);
+
+  final String name, lastMessage;
+  final String avatar;
+  final Function onPress;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.red,
-            radius: 26,
-            // backgroundImage: ,
+    return Row(
+      children: [
+        Expanded(
+          child: ListTile(
+            onTap: onPress,
+            leading: CircleAvatar(
+              backgroundColor: Colors.red,
+              // radius: 26,
+              //todo supply image
+              // backgroundImage: ,
+            ),
+            title: Text(
+              name,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            subtitle: Text(
+              lastMessage,
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
           ),
-          SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Joe Doe',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              Text(
-                'Last message sent',
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

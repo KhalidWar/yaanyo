@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: buildAppBar(),
         body: Padding(
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.all(10),
           child: IndexedStack(
             index: _selectedIndexStack,
             children: [
