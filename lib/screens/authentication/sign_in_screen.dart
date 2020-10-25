@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:yaanyo/screens/sign_up_screen.dart';
+import 'package:yaanyo/screens/authentication/sign_up_screen.dart';
 import 'package:yaanyo/services/authentication.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
 class SignInScreen extends StatefulWidget {
   @override

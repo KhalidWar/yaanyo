@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yaanyo/models/app_user.dart';
+import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/screens/home_screen.dart';
-import 'package:yaanyo/screens/sign_in_screen.dart';
 
 class InitialScreen extends StatefulWidget {
   @override

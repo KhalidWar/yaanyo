@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:yaanyo/screens/profile_tab.dart';
 import 'package:yaanyo/screens/settings_screen.dart';
-import 'package:yaanyo/screens/shopping_tab.dart';
+import 'package:yaanyo/screens/tabs/profile_tab.dart';
+import 'package:yaanyo/screens/tabs/shopping_tab.dart';
 
-import 'chat_tab.dart';
+import 'tabs/chat_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
