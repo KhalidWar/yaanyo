@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/widgets/grid_box.dart';
+import 'package:yaanyo/widgets/grid_box_detailed.dart';
 
 class ShoppingScreen extends StatefulWidget {
   static const String id = 'shopping_screen';
@@ -10,11 +13,46 @@ class ShoppingScreen extends StatefulWidget {
 class _ShoppingScreenState extends State<ShoppingScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: Column(
-        children: [],
+    return Scaffold(
+      floatingActionButton: buildFloatingActionButton(),
+      body: GridView.count(
+        crossAxisCount: 2,
+        mainAxisSpacing: 5,
+        crossAxisSpacing: 5,
+        childAspectRatio: 0.7,
+        shrinkWrap: true,
+        children: [
+          GridBox(
+            shopName: 'Mcdonald\'s',
+            shopIcon: 'assets/images/mcdonalds.svg',
+            gridColor: Colors.orange,
+            checkBoxValue: false,
+            checkBoxTitle: 'Test',
+            onPress: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    child: GridBoxDetailed(
+                      appBarTitle: 'Mcdonald\s',
+                      mainColor: Colors.orange,
+                      checkBoxValue: false,
+                      task: 'Test',
+                    ),
+                  );
+                },
+              ));
+            },
+          ),
+        ],
       ),
+    );
+  }
+
+  FloatingActionButton buildFloatingActionButton() {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      onPressed: () {},
     );
   }
 }
