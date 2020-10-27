@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:yaanyo/widgets/chat_widget.dart';
-import 'package:yaanyo/widgets/start_new_chat.dart';
+import 'package:yaanyo/widgets/chat_list_tile.dart';
+import 'package:yaanyo/widgets/chat_window.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
@@ -12,18 +12,23 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        ChatWidget(
-          name: 'Joe Doe',
-          lastMessage: 'Yea, that\'s a good idea',
-          onPress: () {},
-        ),
-        StartNewChat(
-          onPress: () {},
-        ),
-      ],
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'FAB2',
+        child: Icon(Icons.chat),
+        onPressed: () {},
+      ),
+      body: ChatListTile(
+        name: 'Joe Doe',
+        lastMessage: 'Yea, that\'s a good idea',
+        onPress: () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return ChatWindow();
+            },
+          ));
+        },
+      ),
     );
   }
 }

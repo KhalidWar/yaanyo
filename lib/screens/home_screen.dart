@@ -22,38 +22,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: buildAppBar(),
-        body: Padding(
-          padding: EdgeInsets.all(10),
-          child: IndexedStack(
-            index: _selectedIndexStack,
-            children: [
-              ChatScreen(),
-              ShoppingScreen(),
-              ProfileScreen(),
-            ],
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: IndexedStack(
+        index: _selectedIndexStack,
+        children: [
+          ChatScreen(),
+          ShoppingScreen(),
+          ProfileScreen(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndexStack,
+        onTap: _selectedIndex,
+        items: [
+          BottomNavigationBarItem(
+            label: 'Chat',
+            icon: Icon(Icons.chat),
           ),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndexStack,
-          onTap: _selectedIndex,
-          items: [
-            BottomNavigationBarItem(
-              label: 'Chat',
-              icon: Icon(Icons.chat),
-            ),
-            BottomNavigationBarItem(
-              label: 'Shopping',
-              icon: Icon(Icons.shopping_cart_outlined),
-            ),
-            BottomNavigationBarItem(
-              label: 'Profile',
-              icon: Icon(Icons.account_circle),
-            ),
-          ],
-        ),
+          BottomNavigationBarItem(
+            label: 'Shopping',
+            icon: Icon(Icons.shopping_cart_outlined),
+          ),
+          BottomNavigationBarItem(
+            label: 'Profile',
+            icon: Icon(Icons.account_circle),
+          ),
+        ],
       ),
     );
   }

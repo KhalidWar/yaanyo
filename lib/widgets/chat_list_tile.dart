@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ChatWidget extends StatelessWidget {
-  const ChatWidget({
+class ChatListTile extends StatelessWidget {
+  const ChatListTile({
     Key key,
     this.name,
     this.lastMessage,

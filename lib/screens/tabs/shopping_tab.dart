@@ -17,6 +17,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       floatingActionButton: buildFloatingActionButton(),
       body: GridView.count(
         crossAxisCount: 2,
+        padding: EdgeInsets.all(10),
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
         childAspectRatio: 0.7,
@@ -51,6 +52,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   FloatingActionButton buildFloatingActionButton() {
     return FloatingActionButton(
+      heroTag: 'FAB1',
       child: Icon(Icons.add),
       onPressed: () {},
     );
