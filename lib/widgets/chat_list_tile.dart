@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatListTile extends StatelessWidget {
@@ -5,13 +6,17 @@ class ChatListTile extends StatelessWidget {
     Key key,
     this.name,
     this.lastMessage,
-    this.avatar,
+    this.profilePic,
     this.onPress,
+    this.lastActivity,
+    this.isRead,
   }) : super(key: key);
 
   final String name, lastMessage;
-  final String avatar;
+  final String profilePic;
   final Function onPress;
+  final bool isRead;
+  final String lastActivity;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +27,8 @@ class ChatListTile extends StatelessWidget {
             onTap: onPress,
             leading: CircleAvatar(
               backgroundColor: Colors.red,
-              // radius: 26,
-              //todo supply image
-              // backgroundImage: ,
+              radius: 28,
+              backgroundImage: NetworkImage(profilePic),
             ),
             title: Text(
               name,
@@ -33,6 +37,14 @@ class ChatListTile extends StatelessWidget {
             subtitle: Text(
               lastMessage,
               style: Theme.of(context).textTheme.bodyText2,
+            ),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(lastActivity),
+                Icon(isRead ? Icons.done_all : Icons.done),
+              ],
             ),
           ),
         ),
