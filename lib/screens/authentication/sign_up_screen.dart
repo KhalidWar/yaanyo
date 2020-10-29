@@ -61,6 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     TextFormField(
                       validator: (value) =>
                           value.isEmpty ? 'Email can not be empty' : null,
+                      textInputAction: TextInputAction.next,
                       decoration:
                           kTextFormInputDecoration.copyWith(hintText: 'Email'),
                       onChanged: (input) {
@@ -75,6 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       validator: (value) => value.length < 6
                           ? 'Passwords be 6+ characters long'
                           : null,
+                      textInputAction: TextInputAction.go,
                       decoration: kTextFormInputDecoration.copyWith(
                           hintText: 'Password'),
                       onChanged: (input) {

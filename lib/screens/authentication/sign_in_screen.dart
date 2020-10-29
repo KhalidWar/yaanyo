@@ -59,6 +59,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 TextFormField(
                   validator: (value) =>
                       value.isEmpty ? 'Email can not be empty' : null,
+                  textInputAction: TextInputAction.next,
                   decoration:
                       kTextFormInputDecoration.copyWith(hintText: 'Email'),
                   onChanged: (input) {
@@ -73,6 +74,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   validator: (value) => value.length < 6
                       ? 'Password must be 6+ characters long'
                       : null,
+                  textInputAction: TextInputAction.go,
                   decoration:
                       kTextFormInputDecoration.copyWith(hintText: 'Password'),
                   onChanged: (input) {
