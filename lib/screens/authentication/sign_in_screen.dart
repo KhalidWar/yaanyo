@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_up_screen.dart';
-import 'package:yaanyo/services/authentication.dart';
+import 'package:yaanyo/services/auth_service.dart';
 
 import '../../constants.dart';
 
@@ -10,7 +10,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final Authentication _authentication = Authentication();
+  final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   String _email, _password;
@@ -23,7 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
         _isLoading = true;
       });
       dynamic result =
-          await _authentication.signInWithEmailAndPassword(_email, _password);
+          await _authService.signInWithEmailAndPassword(_email, _password);
       if (result == null) {
         setState(() {
           _isLoading = false;

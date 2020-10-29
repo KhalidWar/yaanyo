@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/initial_screen.dart';
-import 'package:yaanyo/services/authentication.dart';
+import 'package:yaanyo/services/auth_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String id = 'settings_screen';
@@ -10,7 +10,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final Authentication _authentication = Authentication();
+  final AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,7 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         body: Center(
           child: FlatButton(
             onPressed: () async {
-              await _authentication.signOut();
+              await _authService.signOut();
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return InitialScreen();
               }));

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/screens/initial_screen.dart';
-import 'package:yaanyo/services/authentication.dart';
+import 'package:yaanyo/services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<AppUser>.value(
-      value: Authentication().user,
+      value: AuthService().user,
       child: MaterialApp(
         title: 'Yaanyo',
         debugShowCheckedModeBanner: false,
