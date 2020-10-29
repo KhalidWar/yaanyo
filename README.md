@@ -1,5 +1,5 @@
-# PROJECT_NAME
-A flutter + firebae chat and shopping mobile app. This app is built using [Flutter](https://flutter.dev) framework.
+# Yaanyo
+Shopping list and chat app made with flutter utilizing Firebase as backend and Cloud Firestore as database.
 
 
 ## Screenshots
@@ -7,14 +7,17 @@ A flutter + firebae chat and shopping mobile app. This app is built using [Flutt
 
 
 ## Features
-- [UNDER CONSTRUCTIONS]
+- Chat with friends and family.
+- Add items to your shopping on the go.
+- Shopping lists catagorized by stores.
 
 
 ## Packages used
 - [Provider](https://pub.dev/packages/provider)
-- [Shared Preferences](https://pub.dev/packages/shared_preferences)
-- [Font Awesome Icons](https://pub.dev/packages/font_awesome_flutter)
-- [Animations](https://pub.dev/packages/animations)
+- [Firebase Core](https://pub.dev/packages/firebase_core)
+- [Firebase Auth](https://pub.dev/packages/firebase_auth)
+- [Cloud Firestore](https://pub.dev/packages/cloud_firestore)
+- [Flutter SVG](https://pub.dev/packages/flutter_svg)
 
 
 ## Installation
