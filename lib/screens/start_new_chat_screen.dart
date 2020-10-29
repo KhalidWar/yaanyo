@@ -15,7 +15,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
   QuerySnapshot searchSnapshot;
   String _error = '';
 
-  void search() {
+  void searchByEmailAddress() {
     if (_textEditingController.text.isEmpty || _textEditingController == null) {
       setState(() {
         _error = 'Search field cannot be empty';
@@ -86,7 +86,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
                       controller: _textEditingController,
                       autofocus: true,
                       textInputAction: TextInputAction.search,
-                      onSubmitted: (value) => search(),
+                      onSubmitted: (value) => searchByEmailAddress(),
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Search by email address',
@@ -96,7 +96,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
                   IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () {
-                      search();
+                      searchByEmailAddress();
                     },
                   ),
                 ],

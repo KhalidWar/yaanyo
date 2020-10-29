@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/shared_pref_service.dart';
 
 import '../../constants.dart';
 
@@ -10,7 +13,11 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final AuthService _authService = AuthService();
+  final DatabaseService _databaseService = DatabaseService();
+  final SharedPrefService _sharedPrefService = SharedPrefService();
+
   final _formKey = GlobalKey<FormState>();
+  QuerySnapshot _userSnapshot;
 
   String _email, _password;
   String _error = '';
@@ -23,11 +30,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
       dynamic result =
           await _authService.signUpWithEmailAndPassword(_email, _password);
-
       if (result == null) {
         setState(() {
           _isLoading = false;
           _error = 'Invalid Email or Password';
+        });
+      } else {
+        await _databaseService.searchUserByEmail(_email).then((value) {
+          _userSnapshot = value;
+          _sharedPrefService
+              .saveUserEmail(_userSnapshot.docs[0].data()['email']);
         });
       }
     }
@@ -47,18 +59,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text('Sign Up',
-                    style: Theme.of(context).textTheme.headline4.copyWith(
-                        color: Colors.black, fontWeight: FontWeight.bold)),
-                SizedBox(height: size.height * 0.02),
-                Column(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('Sign Up',
+                  style: Theme.of(context).textTheme.headline4.copyWith(
+                      color: Colors.black, fontWeight: FontWeight.bold)),
+              SizedBox(height: size.height * 0.02),
+              Form(
+                key: _formKey,
+                child: Column(
                   children: [
                     TextFormField(
+                      //todo validate email format using RegExp
                       validator: (value) =>
                           value.isEmpty ? 'Email can not be empty' : null,
                       textInputAction: TextInputAction.next,
@@ -102,41 +115,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     // ),
                   ],
                 ),
-                Text(
-                  _error,
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: Colors.red,
-                      ),
-                ),
-                Container(
-                  width: size.width * 0.4,
-                  decoration: BoxDecoration(
-                      color: Colors.blue[500],
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: FlatButton(
-                    onPressed: () {
-                      _signUp();
-                    },
-                    child: _isLoading
-                        ? CircularProgressIndicator(
-                            backgroundColor: Colors.black,
-                          )
-                        : Text(
-                            'Sign Up',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
+              ),
+              Text(
+                _error,
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      color: Colors.red,
+                    ),
+              ),
+              Container(
+                width: size.width * 0.4,
+                decoration: BoxDecoration(
+                    color: Colors.blue[500],
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                child: FlatButton(
+                  onPressed: () {
+                    _signUp();
                   },
-                  child: Text('Back to Sign In',
-                      style: Theme.of(context).textTheme.bodyText2),
+                  child: _isLoading
+                      ? CircularProgressIndicator(
+                          backgroundColor: Colors.black,
+                        )
+                      : Text(
+                          'Sign Up',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
                 ),
-              ],
-            ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Back to Sign In',
+                    style: Theme.of(context).textTheme.bodyText2),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:yaanyo/widgets/chat_list_tile.dart';
-import 'package:yaanyo/widgets/chat_window.dart';
 
+import '../chat_room_screen.dart';
 import '../start_new_chat_screen.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatTab extends StatefulWidget {
   static const String id = 'chat_screen';
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _ChatTabState createState() => _ChatTabState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatTabState extends State<ChatTab> {
   String _chatLastActivity() {
     return '${DateTime.now().hour}:${DateTime.now().minute}';
   }
@@ -33,7 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPress: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
-                  return ChatWindow(
+                  return ChatRoomScreen(
                     name: 'Joe Doe',
                     profilePic:
                         'https://images.unsplash.com/photo-1540854148606-26d095702211?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=08796a3910d0616a5381e7ccd1721279&auto=format&fit=crop&w=500&q=60',

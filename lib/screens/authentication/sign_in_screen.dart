@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_up_screen.dart';
 import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/shared_pref_service.dart';
 
 import '../../constants.dart';
+import '../home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -11,7 +15,11 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final AuthService _authService = AuthService();
+  final DatabaseService _databaseService = DatabaseService();
+  final SharedPrefService _sharedPrefService = SharedPrefService();
+
   final _formKey = GlobalKey<FormState>();
+  QuerySnapshot _userSnapshot;
 
   String _email, _password;
   String _error = '';
@@ -29,6 +37,16 @@ class _SignInScreenState extends State<SignInScreen> {
           _isLoading = false;
           _error = 'Invalid Email or password';
         });
+      } else {
+        await _databaseService.searchUserByEmail(_email).then((value) {
+          _userSnapshot = value;
+          _sharedPrefService
+              .saveUserEmail(_userSnapshot.docs[0].data()['email']);
+        });
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return HomeScreen();
+        }));
       }
     }
   }
@@ -57,6 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         color: Colors.black, fontWeight: FontWeight.bold)),
                 SizedBox(height: size.height * 0.04),
                 TextFormField(
+                  //todo validate email format using RegExp
                   validator: (value) =>
                       value.isEmpty ? 'Email can not be empty' : null,
                   textInputAction: TextInputAction.next,

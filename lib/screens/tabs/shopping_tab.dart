@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 import 'package:yaanyo/widgets/grid_box_detailed.dart';
 
-class ShoppingScreen extends StatefulWidget {
+class ShoppingTab extends StatefulWidget {
   static const String id = 'shopping_screen';
 
   @override
-  _ShoppingScreenState createState() => _ShoppingScreenState();
+  _ShoppingTabState createState() => _ShoppingTabState();
 }
 
-class _ShoppingScreenState extends State<ShoppingScreen> {
+class _ShoppingTabState extends State<ShoppingTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

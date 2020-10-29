@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: _selectedIndexStack,
         children: [
-          ChatScreen(),
-          ShoppingScreen(),
-          ProfileScreen(),
+          ChatTab(),
+          ShoppingTab(),
+          ProfileTab(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

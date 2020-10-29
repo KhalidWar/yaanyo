@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ChatWindow extends StatelessWidget {
-  const ChatWindow({
+class ChatRoomScreen extends StatelessWidget {
+  const ChatRoomScreen({
     Key key,
     this.name,
     this.profilePic,
