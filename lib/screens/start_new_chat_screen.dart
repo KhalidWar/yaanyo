@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/screens/chat_room_screen.dart';
 import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/shared_pref_service.dart';
+import 'package:yaanyo/widgets/error_text.dart';
 
 class StartNewChatScreen extends StatefulWidget {
   @override
@@ -9,8 +12,9 @@ class StartNewChatScreen extends StatefulWidget {
 }
 
 class _StartNewChatScreenState extends State<StartNewChatScreen> {
-  TextEditingController _textEditingController = TextEditingController();
-  DatabaseService _databaseService = DatabaseService();
+  final DatabaseService _databaseService = DatabaseService();
+  final SharedPrefService _sharedPrefService = SharedPrefService();
+  final TextEditingController _textEditingController = TextEditingController();
 
   QuerySnapshot searchSnapshot;
   String _error = '';
@@ -33,29 +37,67 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
 
   Widget searchResultWidget() {
     return searchSnapshot == null
-        ? Text(
-            _error,
-            style: Theme.of(context)
-                .textTheme
-                .headline5
-                .copyWith(color: Colors.red),
-          )
-        : ListView.builder(
-            shrinkWrap: true,
-            itemCount: searchSnapshot.docs.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: () {},
-                child: Container(
-                  child: ListTile(
-                    title: Text(searchSnapshot.docs[index].data()['name']),
-                    subtitle: Text(searchSnapshot.docs[index].data()['email']),
-                    trailing: Icon(Icons.send),
-                  ),
-                ),
-              );
-            },
+        ? ErrorText(error: _error)
+        : Column(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: searchSnapshot.docs.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      createChatRoom(
+                          searchSnapshot.docs[index].data()['email']);
+                    },
+                    child: Container(
+                      child: ListTile(
+                        title: Text(searchSnapshot.docs[index].data()['name']),
+                        subtitle:
+                            Text(searchSnapshot.docs[index].data()['email']),
+                        trailing: Icon(Icons.send),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ErrorText(error: _error)
+            ],
           );
+  }
+
+  String _getChatRoomID(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
+
+  void createChatRoom(String searchedUserEmail) async {
+    String currentUserEmail = await _sharedPrefService.getUserEmail();
+
+    if (searchedUserEmail != currentUserEmail) {
+      String chatRoomID = _getChatRoomID(searchedUserEmail, currentUserEmail);
+
+      List<String> users = [searchedUserEmail, currentUserEmail];
+      Map<String, dynamic> chatRoomMap = {
+        'users  ': users,
+        'chatRoomID': chatRoomID,
+      };
+
+      _databaseService.createChatRoom(chatRoomID, chatRoomMap);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return ChatRoomScreen(
+          name: 'Joe Doe',
+          profilePic:
+              'https://images.unsplash.com/photo-1540854148606-26d095702211?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=08796a3910d0616a5381e7ccd1721279&auto=format&fit=crop&w=500&q=60',
+        );
+      }));
+    } else {
+      setState(() {
+        _error = 'You cannot chat with yourself';
+      });
+    }
   }
 
   @override

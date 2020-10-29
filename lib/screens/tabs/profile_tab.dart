@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:yaanyo/services/database_service.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileTab extends StatefulWidget {
   static const String id = 'profile_screen';
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProfileTabState createState() => _ProfileTabState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileTabState extends State<ProfileTab> {
+  final DatabaseService _databaseService = DatabaseService();
+
   @override
   Widget build(BuildContext context) {
     return Container(
