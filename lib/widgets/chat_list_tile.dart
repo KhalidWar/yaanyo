@@ -21,7 +21,6 @@ class ChatListTile extends StatelessWidget {
         Expanded(
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.red,
               radius: 28,
               backgroundImage: NetworkImage(profilePic),
             ),
@@ -47,6 +46,7 @@ class ChatListTile extends StatelessWidget {
                     name: userName,
                     chatRoomID: chatRoomID,
                     currentUserEmail: currentUserEmail,
+                    profilePic: profilePic,
                   );
                 },
               ));

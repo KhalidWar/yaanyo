@@ -165,20 +165,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.circular(40),
-            ),
-            child: Center(
-              child: Text(
-                '${widget.currentUserEmail.substring(0, 1).toUpperCase()}',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-          ),
+          CircleAvatar(backgroundImage: NetworkImage(widget.profilePic)),
           SizedBox(width: 10),
           Text(widget.name),
         ],

@@ -46,7 +46,8 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
     }
   }
 
-  void createChatRoom(String searchedUserEmail) async {
+  void createChatRoom(
+      {String searchedUserEmail, String profilePic, String name}) async {
     if (searchedUserEmail == widget.currentUserEmail) {
       setState(() {
         _error = 'You cannot chat with yourself';
@@ -64,9 +65,8 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
       _databaseService.createChatRoom(chatRoomID, chatRoomMap);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return ChatRoomScreen(
-          name: 'Joe Doe',
-          profilePic:
-              'https://images.unsplash.com/photo-1540854148606-26d095702211?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=08796a3910d0616a5381e7ccd1721279&auto=format&fit=crop&w=500&q=60',
+          name: name,
+          profilePic: profilePic,
           chatRoomID: chatRoomID,
           currentUserEmail: widget.currentUserEmail,
         );
@@ -129,10 +129,22 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
                           return GestureDetector(
                             onTap: () {
                               createChatRoom(
-                                  _searchSnapshot.docs[index].data()['email']);
+                                name:
+                                    _searchSnapshot.docs[index].data()['name'],
+                                profilePic: _searchSnapshot.docs[index]
+                                    .data()['profilePic'],
+                                searchedUserEmail:
+                                    _searchSnapshot.docs[index].data()['email'],
+                              );
                             },
                             child: Container(
                               child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    _searchSnapshot.docs[index]
+                                        .data()['profilePic'],
+                                  ),
+                                ),
                                 title: Text(
                                     _searchSnapshot.docs[index].data()['name']),
                                 subtitle: Text(_searchSnapshot.docs[index]

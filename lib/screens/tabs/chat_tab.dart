@@ -23,6 +23,7 @@ class _ChatTabState extends State<ChatTab> {
   final DatabaseService _databaseService = DatabaseService();
 
   Stream<QuerySnapshot> _chatStream;
+  QuerySnapshot _userSnapshot;
 
   @override
   void initState() {
@@ -59,16 +60,28 @@ class _ChatTabState extends State<ChatTab> {
                 );
               } else if (snapshot.hasData) {
                 return ListView.builder(
+                  shrinkWrap: true,
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (BuildContext context, int index) {
+                    //todo get userName instead of email
+                    //todo get profilePic for those emails
+                    String otherUserEmail = snapshot.data.documents[index]
+                        .data()['chatRoomID']
+                        .toString()
+                        .replaceAll('_', '')
+                        .replaceAll('${widget.currentUserEmail}', '');
+
+                    _databaseService.searchUserByEmail(otherUserEmail).then(
+                      (value) {
+                        setState(() {
+                          _userSnapshot = value;
+                        });
+                      },
+                    );
+
                     return ChatListTile(
-                      userName: snapshot.data.documents[index]
-                          .data()['chatRoomID']
-                          .toString()
-                          .replaceAll('_', '')
-                          .replaceAll('${widget.currentUserEmail}', ''),
-                      profilePic:
-                          snapshot.data.documents[index].data()['chatRoomID'],
+                      userName: otherUserEmail,
+                      profilePic: _userSnapshot.docs[0].data()['profilePic'],
                       lastMessage: 'Yea, that\'s a good idea',
                       chatRoomID:
                           snapshot.data.documents[index].data()['chatRoomID'],
