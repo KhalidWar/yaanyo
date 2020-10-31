@@ -33,13 +33,17 @@ class AuthService {
   }
 
   Future<AppUser> signUpWithEmailAndPassword(
-      String email, String password) async {
+      {String email, String password, String name}) async {
     try {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user;
       await _databaseServices.addUserToDatabase(
-          user.uid, user.email, user.email, defaultProfilePic);
+        uid: user.uid,
+        name: name,
+        email: user.email,
+        profilePic: defaultProfilePic,
+      );
       return _appUserFromUser(user);
     } catch (e) {
       print(e.toString());

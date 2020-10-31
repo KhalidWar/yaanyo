@@ -19,7 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   QuerySnapshot _userSnapshot;
 
-  String _email, _password;
+  String _email, _password, _name;
   String _error = '';
   bool _isLoading = false;
 
@@ -28,19 +28,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {
         _isLoading = true;
       });
-      dynamic result =
-          await _authService.signUpWithEmailAndPassword(_email, _password);
+      dynamic result = await _authService.signUpWithEmailAndPassword(
+          name: _name, email: _email, password: _password);
       if (result == null) {
         setState(() {
           _isLoading = false;
           _error = 'Invalid Email or Password';
         });
       } else {
-        await _databaseService.searchUserByEmail(_email).then((value) {
-          _userSnapshot = value;
-          _sharedPrefService
-              .saveUserEmail(_userSnapshot.docs[0].data()['email']);
-        });
+        _sharedPrefService.saveUserDetails(userEmail: _email, userName: _name);
       }
     }
   }
@@ -52,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       backgroundColor: Colors.blue[500],
       body: Center(
         child: Container(
-          height: size.height * 0.55,
+          height: size.height * 0.6,
           width: size.width * 0.8,
           padding: EdgeInsets.all(25),
           decoration: BoxDecoration(
@@ -71,6 +67,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   children: [
                     TextFormField(
+                      textCapitalization: TextCapitalization.words,
+                      validator: (value) =>
+                          value.isEmpty ? 'Name can not be empty' : null,
+                      textInputAction: TextInputAction.next,
+                      decoration:
+                          kTextFormInputDecoration.copyWith(hintText: 'Name'),
+                      onChanged: (input) {
+                        setState(() {
+                          _name = input;
+                        });
+                      },
+                    ),
+                    SizedBox(height: size.height * 0.008),
+                    TextFormField(
                       //todo validate email format using RegExp
                       validator: (value) =>
                           value.isEmpty ? 'Email can not be empty' : null,
@@ -87,7 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     TextFormField(
                       obscureText: true,
                       validator: (value) => value.length < 6
-                          ? 'Passwords be 6+ characters long'
+                          ? 'Password must be 6+ characters long'
                           : null,
                       textInputAction: TextInputAction.go,
                       decoration: kTextFormInputDecoration.copyWith(
@@ -118,9 +128,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               Text(
                 _error,
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
-                      color: Colors.red,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(color: Colors.red),
               ),
               Container(
                 width: size.width * 0.4,

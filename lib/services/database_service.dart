@@ -10,7 +10,7 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('chatRooms');
 
   Future addUserToDatabase(
-      String uid, String email, String name, String profilePic) async {
+      {String uid, String email, String name, String profilePic}) async {
     return await _usersCollection.add({
       'name': name,
       'email': email,
@@ -28,6 +28,28 @@ class DatabaseService {
         .doc(chatRoomID)
         .set(chatRoomMap)
         .catchError((e) => print(e.toString()));
+  }
+
+  Future addMessage(String chatRoomID, Map messageMap) async {
+    return await _chatRoomsCollection
+        .doc(chatRoomID)
+        .collection('chats')
+        .add(messageMap)
+        .catchError((e) => print(e.toString()));
+  }
+
+  Stream<QuerySnapshot> getConversations(String chatRoomID) {
+    return _chatRoomsCollection
+        .doc(chatRoomID)
+        .collection('chats')
+        .orderBy('time', descending: false)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getChatRooms(String userEmail) {
+    return _chatRoomsCollection
+        .where('users', arrayContains: userEmail)
+        .snapshots();
   }
 
   Future getUserData(String uid) async {}

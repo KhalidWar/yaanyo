@@ -38,11 +38,10 @@ class _SignInScreenState extends State<SignInScreen> {
           _error = 'Invalid Email or password';
         });
       } else {
-        await _databaseService.searchUserByEmail(_email).then((value) {
-          _userSnapshot = value;
-          _sharedPrefService
-              .saveUserEmail(_userSnapshot.docs[0].data()['email']);
-        });
+        // await _databaseService.searchUserByEmail(_email).then((value) {
+        //   _userSnapshot = value;
+        _sharedPrefService.saveUserDetails(userEmail: _email);
+        // });
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) {
           return HomeScreen();

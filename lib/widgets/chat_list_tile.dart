@@ -1,22 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/screens/chat_room_screen.dart';
 
 class ChatListTile extends StatelessWidget {
   const ChatListTile({
     Key key,
-    this.name,
+    this.userName,
     this.lastMessage,
+    this.chatRoomID,
+    this.currentUserEmail,
     this.profilePic,
-    this.onPress,
-    this.lastActivity,
-    this.isRead,
   }) : super(key: key);
 
-  final String name, lastMessage;
-  final String profilePic;
-  final Function onPress;
-  final bool isRead;
-  final String lastActivity;
+  final String userName, profilePic, lastMessage, chatRoomID, currentUserEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +20,13 @@ class ChatListTile extends StatelessWidget {
       children: [
         Expanded(
           child: ListTile(
-            onTap: onPress,
             leading: CircleAvatar(
               backgroundColor: Colors.red,
               radius: 28,
               backgroundImage: NetworkImage(profilePic),
             ),
             title: Text(
-              name,
+              userName,
               style: Theme.of(context).textTheme.headline6,
             ),
             subtitle: Text(
@@ -42,10 +37,20 @@ class ChatListTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(lastActivity),
-                Icon(isRead ? Icons.done_all : Icons.done),
+                Icon(Icons.done_all),
               ],
             ),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return ChatRoomScreen(
+                    name: userName,
+                    chatRoomID: chatRoomID,
+                    currentUserEmail: currentUserEmail,
+                  );
+                },
+              ));
+            },
           ),
         ),
       ],

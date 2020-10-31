@@ -12,27 +12,18 @@ class SharedPrefService {
     }
   }
 
-  Future saveUserEmail(String userEmailValue) async {
+  Future saveUserDetails({String userEmail, String userName}) async {
     await _initSharedPref();
-    return await _sharedPreferences.setString(_userEmailKey, userEmailValue);
+    await _sharedPreferences.setString(_userEmailKey, userEmail);
+    await _sharedPreferences.setString(_userNameKey, userName);
   }
 
-  Future saveUserName(String userNameValue) async {
+  Future<String> getUserDetail({String userDetailKey}) async {
     await _initSharedPref();
-    return await _sharedPreferences.setString(_userNameKey, userNameValue);
+    return _sharedPreferences.getString(userDetailKey);
   }
 
-  Future<String> getUserEmail() async {
-    await _initSharedPref();
-    return _sharedPreferences.getString(_userEmailKey);
-  }
-
-  Future<String> getUserName() async {
-    await _initSharedPref();
-    return _sharedPreferences.getString(_userNameKey);
-  }
-
-  Future removeUserNameAndEmail() async {
+  Future removeUserDetails() async {
     await _initSharedPref();
     _sharedPreferences..remove(_userEmailKey)..remove(_userNameKey);
   }

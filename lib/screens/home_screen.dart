@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/settings_screen.dart';
 import 'package:yaanyo/screens/tabs/profile_tab.dart';
 import 'package:yaanyo/screens/tabs/shopping_tab.dart';
+import 'package:yaanyo/services/shared_pref_service.dart';
 
 import 'tabs/chat_tab.dart';
 
@@ -12,12 +13,28 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final SharedPrefService _sharedPrefService = SharedPrefService();
   int _selectedIndexStack = 0;
+  String currentUserEmail;
+  String currentUserName;
 
   void _selectedIndex(int index) {
     setState(() {
       _selectedIndexStack = index;
     });
+  }
+
+  Future _fetchUserData() async {
+    currentUserEmail =
+        await _sharedPrefService.getUserDetail(userDetailKey: 'userEmail');
+    currentUserName =
+        await _sharedPrefService.getUserDetail(userDetailKey: 'userEmail');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
   }
 
   @override
@@ -27,7 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: _selectedIndexStack,
         children: [
-          ChatTab(),
+          ChatTab(
+              currentUserEmail: currentUserEmail,
+              currentUserName: currentUserName),
           ShoppingTab(),
           ProfileTab(),
         ],

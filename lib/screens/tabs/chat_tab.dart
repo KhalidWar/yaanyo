@@ -1,47 +1,100 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
+import 'package:yaanyo/services/database_service.dart';
 import 'package:yaanyo/widgets/chat_list_tile.dart';
+import 'package:yaanyo/widgets/warning_widget.dart';
 
-import '../chat_room_screen.dart';
 import '../start_new_chat_screen.dart';
 
 class ChatTab extends StatefulWidget {
   static const String id = 'chat_screen';
+
+  const ChatTab({Key key, this.currentUserEmail, this.currentUserName})
+      : super(key: key);
+  final String currentUserEmail;
+  final String currentUserName;
 
   @override
   _ChatTabState createState() => _ChatTabState();
 }
 
 class _ChatTabState extends State<ChatTab> {
-  String _chatLastActivity() {
-    return '${DateTime.now().hour}:${DateTime.now().minute}';
+  final DatabaseService _databaseService = DatabaseService();
+
+  Stream<QuerySnapshot> _chatStream;
+
+  @override
+  void initState() {
+    super.initState();
+    Stream<QuerySnapshot> chatsStream =
+        _databaseService.getChatRooms(widget.currentUserEmail);
+    _chatStream = chatsStream;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: buildFloatingActionButton(),
-      body: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return ChatListTile(
-            name: 'Joe Doe',
-            lastMessage: 'Yea, that\'s a good idea',
-            lastActivity: _chatLastActivity(),
-            profilePic:
-                'https://images.unsplash.com/photo-1540854148606-26d095702211?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=08796a3910d0616a5381e7ccd1721279&auto=format&fit=crop&w=500&q=60',
-            isRead: false,
-            onPress: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return ChatRoomScreen(
-                    name: 'Joe Doe',
-                    profilePic:
-                        'https://images.unsplash.com/photo-1540854148606-26d095702211?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=08796a3910d0616a5381e7ccd1721279&auto=format&fit=crop&w=500&q=60',
-                  );
-                },
-              ));
-            },
-          );
+      body: StreamBuilder(
+        stream: _chatStream,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return WarningWidget(
+                iconData: Icons.warning_amber_rounded,
+                label:
+                    'No Internet Connection \n Please make sure you\'re online',
+                buttonLabel: 'Try again',
+                buttonOnPress: () {},
+              );
+            case ConnectionState.waiting:
+              return Center(child: CircularProgressIndicator());
+            default:
+              if (snapshot.data.documents.isEmpty) {
+                return WarningWidget(
+                  iconData: Icons.hourglass_empty,
+                  label: 'Chat list is empty ',
+                  buttonOnPress: () {},
+                );
+              } else if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    print(snapshot.data.documents.length);
+                    // print(snapshot.data.documents[index]
+                    //     .data()['chatRoomID']
+                    //     .toString()
+                    //     .replaceAll('_', '')
+                    //     .replaceAll('${widget.currentUserEmail}', ''));
+                    return ChatListTile(
+                      //todo fix username issue
+                      userName: widget.currentUserName,
+                      profilePic:
+                          snapshot.data.documents[index].data()['chatRoomID'],
+                      lastMessage: 'Yea, that\'s a good idea',
+                      chatRoomID:
+                          snapshot.data.documents[index].data()['chatRoomID'],
+                      currentUserEmail: widget.currentUserEmail,
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return WarningWidget(
+                  iconData: Icons.warning_amber_rounded,
+                  label: 'Something went wrong. \n Please sign in again!',
+                  buttonLabel: 'Sign in again',
+                  buttonOnPress: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                      return SignInScreen();
+                    }));
+                  },
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+          }
         },
       ),
     );
@@ -54,7 +107,9 @@ class _ChatTabState extends State<ChatTab> {
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return StartNewChatScreen();
+            return StartNewChatScreen(
+              currentUserEmail: widget.currentUserEmail,
+            );
           },
         ));
       },
