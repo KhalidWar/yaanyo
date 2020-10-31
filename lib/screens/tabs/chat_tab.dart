@@ -61,15 +61,12 @@ class _ChatTabState extends State<ChatTab> {
                 return ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (BuildContext context, int index) {
-                    print(snapshot.data.documents.length);
-                    // print(snapshot.data.documents[index]
-                    //     .data()['chatRoomID']
-                    //     .toString()
-                    //     .replaceAll('_', '')
-                    //     .replaceAll('${widget.currentUserEmail}', ''));
                     return ChatListTile(
-                      //todo fix username issue
-                      userName: widget.currentUserName,
+                      userName: snapshot.data.documents[index]
+                          .data()['chatRoomID']
+                          .toString()
+                          .replaceAll('_', '')
+                          .replaceAll('${widget.currentUserEmail}', ''),
                       profilePic:
                           snapshot.data.documents[index].data()['chatRoomID'],
                       lastMessage: 'Yea, that\'s a good idea',
