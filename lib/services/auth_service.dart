@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final DatabaseService _databaseServices = DatabaseService();
+  final DatabaseService _databaseServices = serviceLocator<DatabaseService>();
 
   final defaultProfilePic =
       'https://images.unsplash.com/photo-1544502062-f82887f03d1c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1427&q=80';
@@ -38,12 +39,12 @@ class AuthService {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user;
-      await _databaseServices.addUserToDatabase(
-        uid: user.uid,
-        name: name,
-        email: user.email,
-        profilePic: defaultProfilePic,
-      );
+      final appUser = AppUser(
+          name: name,
+          email: email,
+          uid: user.uid,
+          profilePic: defaultProfilePic);
+      await _databaseServices.addUserToDatabase(appUser: appUser);
       return _appUserFromUser(user);
     } catch (e) {
       print(e.toString());

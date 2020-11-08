@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/chat_room_screen.dart';
 import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 import 'package:yaanyo/widgets/error_text.dart';
 
 class StartNewChatScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class StartNewChatScreen extends StatefulWidget {
 }
 
 class _StartNewChatScreenState extends State<StartNewChatScreen> {
-  final DatabaseService _databaseService = DatabaseService();
+  final DatabaseService _databaseService = serviceLocator<DatabaseService>();
   final TextEditingController _textEditingController = TextEditingController();
 
   QuerySnapshot _searchSnapshot;
@@ -38,23 +39,23 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
     }
   }
 
-  String _getChatRoomID(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return '$b\_$a';
-    } else {
-      return '$a\_$b';
-    }
-  }
-
   void createChatRoom(
       {String searchedUserEmail, String profilePic, String name}) async {
+    String getChatRoomID(String a, String b) {
+      if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+        return '$b\_$a';
+      } else {
+        return '$a\_$b';
+      }
+    }
+
     if (searchedUserEmail == widget.currentUserEmail) {
       setState(() {
         _error = 'You cannot chat with yourself';
       });
     } else {
       String chatRoomID =
-          _getChatRoomID(searchedUserEmail, widget.currentUserEmail);
+          getChatRoomID(searchedUserEmail, widget.currentUserEmail);
 
       List<String> users = [searchedUserEmail, widget.currentUserEmail];
       Map<String, dynamic> chatRoomMap = {
@@ -126,31 +127,21 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
                         shrinkWrap: true,
                         itemCount: _searchSnapshot.docs.length,
                         itemBuilder: (BuildContext context, int index) {
+                          final data = _searchSnapshot.docs[index].data();
+
                           return GestureDetector(
-                            onTap: () {
-                              createChatRoom(
-                                name:
-                                    _searchSnapshot.docs[index].data()['name'],
-                                profilePic: _searchSnapshot.docs[index]
-                                    .data()['profilePic'],
-                                searchedUserEmail:
-                                    _searchSnapshot.docs[index].data()['email'],
-                              );
-                            },
-                            child: Container(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                    _searchSnapshot.docs[index]
-                                        .data()['profilePic'],
-                                  ),
-                                ),
-                                title: Text(
-                                    _searchSnapshot.docs[index].data()['name']),
-                                subtitle: Text(_searchSnapshot.docs[index]
-                                    .data()['email']),
-                                trailing: Icon(Icons.send),
-                              ),
+                            onTap: () => createChatRoom(
+                              name: data['name'],
+                              profilePic: data['profilePic'],
+                              searchedUserEmail: data['email'],
+                            ),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(data['profilePic'])),
+                              title: Text(data['name']),
+                              subtitle: Text(data['email']),
+                              trailing: Icon(Icons.send),
                             ),
                           );
                         },

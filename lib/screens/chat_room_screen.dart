@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/models/message.dart';
 import 'package:yaanyo/services/database_service.dart';
 import 'package:yaanyo/widgets/message_tile.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
@@ -25,14 +26,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   Stream _chatMessageStream;
 
-  void sendMessage() async {
+  void _sendMessage() async {
     if (_messageInputController.text.isNotEmpty) {
-      Map<String, dynamic> messageMap = {
-        'message': _messageInputController.text,
-        'sendBy': widget.currentUserEmail,
-        'time': DateTime.now().millisecondsSinceEpoch,
-      };
-      await _databaseService.addMessage(widget.chatRoomID, messageMap);
+      final message = Message(
+          message: _messageInputController.text,
+          time: DateTime.now().millisecondsSinceEpoch,
+          sender: widget.currentUserEmail);
+      await _databaseService.addMessage(widget.chatRoomID, message);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -129,7 +129,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         controller: _messageInputController,
                         textInputAction: TextInputAction.send,
                         onSubmitted: (value) {
-                          sendMessage();
+                          _sendMessage();
                           _messageInputController.clear();
                         },
                         decoration: InputDecoration(
@@ -146,7 +146,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     IconButton(
                       icon: Icon(Icons.send),
                       onPressed: () {
-                        sendMessage();
+                        _sendMessage();
                         _messageInputController.clear();
                       },
                     ),

@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/services/auth_service.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/shared_pref_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 
 import '../../constants.dart';
 
@@ -12,12 +10,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final AuthService _authService = AuthService();
-  final DatabaseService _databaseService = DatabaseService();
-  final SharedPrefService _sharedPrefService = SharedPrefService();
-
   final _formKey = GlobalKey<FormState>();
-  QuerySnapshot _userSnapshot;
 
   String _email, _password, _name;
   String _error = '';
@@ -28,15 +21,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {
         _isLoading = true;
       });
-      dynamic result = await _authService.signUpWithEmailAndPassword(
-          name: _name, email: _email, password: _password);
+      dynamic result = await serviceLocator<AuthService>()
+          .signUpWithEmailAndPassword(
+              name: _name, email: _email, password: _password);
       if (result == null) {
         setState(() {
           _isLoading = false;
           _error = 'Invalid Email or Password';
         });
       } else {
-        _sharedPrefService.saveUserDetails(userEmail: _email, userName: _name);
+        serviceLocator<AuthService>()
+            .signInWithEmailAndPassword(_email, _password);
       }
     }
   }

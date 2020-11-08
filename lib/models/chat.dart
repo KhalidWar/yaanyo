@@ -1,11 +1,31 @@
-class Chat {
-  const Chat(
-    this.name,
-    this.email,
-    this.message,
-    this.time,
-    this.profilePic,
-  );
+import 'package:yaanyo/models/app_user.dart';
+import 'package:yaanyo/models/message.dart';
 
-  final String name, email, message, time, profilePic;
+class Chat {
+  const Chat({
+    this.chatRoomID,
+    this.message,
+    this.users,
+  });
+
+  final String chatRoomID;
+  final List<AppUser> users;
+  final Message message;
+
+  factory Chat.fromJson(
+    Map<String, dynamic> json,
+    Map<String, Object> jsonUsersList,
+    Map<String, Object> jsonMessage,
+  ) {
+    List users = jsonUsersList['data'];
+    List<AppUser> usersList = users.map((e) => AppUser.fromJson(e)).toList();
+
+    final message = Message.fromJson(jsonMessage);
+
+    return Chat(
+      chatRoomID: json['data'],
+      users: usersList,
+      message: message,
+    );
+  }
 }

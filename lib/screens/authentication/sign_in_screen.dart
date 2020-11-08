@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_up_screen.dart';
 import 'package:yaanyo/services/auth_service.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/shared_pref_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 
 import '../../constants.dart';
-import '../home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -14,12 +11,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final AuthService _authService = AuthService();
-  final DatabaseService _databaseService = DatabaseService();
-  final SharedPrefService _sharedPrefService = SharedPrefService();
-
   final _formKey = GlobalKey<FormState>();
-  QuerySnapshot _userSnapshot;
 
   String _email, _password;
   String _error = '';
@@ -30,22 +22,13 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {
         _isLoading = true;
       });
-      dynamic result =
-          await _authService.signInWithEmailAndPassword(_email, _password);
+      dynamic result = await serviceLocator<AuthService>()
+          .signInWithEmailAndPassword(_email, _password);
       if (result == null) {
         setState(() {
           _isLoading = false;
           _error = 'Invalid Email or password';
         });
-      } else {
-        // await _databaseService.searchUserByEmail(_email).then((value) {
-        //   _userSnapshot = value;
-        _sharedPrefService.saveUserDetails(userEmail: _email);
-        // });
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) {
-          return HomeScreen();
-        }));
       }
     }
   }

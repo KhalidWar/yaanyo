@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/screens/initial_screen.dart';
 import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 
 void main() async {
+  initServiceLocator();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<AppUser>.value(
-      value: AuthService().user,
+      value: serviceLocator<AuthService>().user,
       child: MaterialApp(
         title: 'Yaanyo',
         debugShowCheckedModeBanner: false,

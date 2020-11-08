@@ -1,22 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:yaanyo/models/app_user.dart';
+import 'package:yaanyo/models/message.dart';
 
 class DatabaseService {
-  DatabaseService({this.uid});
-  final String uid;
-
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _chatRoomsCollection =
       FirebaseFirestore.instance.collection('chatRooms');
 
-  Future addUserToDatabase(
-      {String uid, String email, String name, String profilePic}) async {
-    return await _usersCollection.add({
-      'name': name,
-      'email': email,
-      'uid': uid,
-      'profilePic': profilePic,
-    });
+  Future addUserToDatabase({AppUser appUser}) async {
+    return await _usersCollection.doc(appUser.email).set(appUser.toJson());
   }
 
   Future searchUserByEmail(String email) async {
@@ -30,11 +23,11 @@ class DatabaseService {
         .catchError((e) => print(e.toString()));
   }
 
-  Future addMessage(String chatRoomID, Map messageMap) async {
+  Future addMessage(String chatRoomID, Message message) async {
     return await _chatRoomsCollection
         .doc(chatRoomID)
         .collection('chats')
-        .add(messageMap)
+        .add(message.toJson())
         .catchError((e) => print(e.toString()));
   }
 

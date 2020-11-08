@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
+import 'package:yaanyo/services/auth_service.dart';
 import 'package:yaanyo/services/database_service.dart';
 import 'package:yaanyo/widgets/chat_list_tile.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
@@ -81,7 +82,7 @@ class _ChatTabState extends State<ChatTab> {
 
                     return ChatListTile(
                       userName: otherUserEmail,
-                      profilePic: _userSnapshot.docs[0].data()['profilePic'],
+                      profilePic: AuthService().defaultProfilePic,
                       lastMessage: 'Yea, that\'s a good idea',
                       chatRoomID:
                           snapshot.data.documents[index].data()['chatRoomID'],
