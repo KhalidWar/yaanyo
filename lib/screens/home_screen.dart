@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/settings_screen.dart';
 import 'package:yaanyo/screens/tabs/profile_tab.dart';
 import 'package:yaanyo/screens/tabs/shopping_tab.dart';
-import 'package:yaanyo/services/shared_pref_service.dart';
+import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 
 import 'tabs/chat_tab.dart';
 
@@ -13,7 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final SharedPrefService _sharedPrefService = SharedPrefService();
+  Stream<QuerySnapshot> currentUserStream;
+
   int _selectedIndexStack = 0;
   String currentUserEmail;
   String currentUserName;
@@ -24,17 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future _fetchUserData() async {
-    currentUserEmail =
-        await _sharedPrefService.getUserDetail(userDetailKey: 'userEmail');
-    currentUserName =
-        await _sharedPrefService.getUserDetail(userDetailKey: 'userEmail');
-  }
-
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    currentUserStream =
+        serviceLocator<DatabaseService>().getCurrentUserStream();
   }
 
   @override
@@ -44,11 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: _selectedIndexStack,
         children: [
-          ChatTab(
-              currentUserEmail: currentUserEmail,
-              currentUserName: currentUserName),
+          ChatTab(currentUserEmail: currentUserEmail),
           ShoppingTab(),
-          ProfileTab(),
+          ProfileTab(currentUserStream: currentUserStream),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

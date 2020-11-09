@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/models/message.dart';
 
@@ -45,7 +46,14 @@ class DatabaseService {
         .snapshots();
   }
 
-  Future getUserData(String uid) async {}
+  Stream<QuerySnapshot> getCurrentUserStream() {
+    final email = FirebaseAuth.instance.currentUser.email;
+    return _usersCollection.where('email', isEqualTo: email).snapshots();
+  }
 
-  Future updateUserData() async {}
+  Future updateUserName(String newName) async {
+    final email = FirebaseAuth.instance.currentUser.email;
+    final newNameMap = {'name': newName};
+    return await _usersCollection.doc(email).update(newNameMap);
+  }
 }
