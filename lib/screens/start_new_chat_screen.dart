@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/screens/chat_room_screen.dart';
 import 'package:yaanyo/services/database_service.dart';
 import 'package:yaanyo/services/service_locator.dart';
 import 'package:yaanyo/widgets/error_text.dart';
 
 class StartNewChatScreen extends StatefulWidget {
-  const StartNewChatScreen({Key key, this.currentUserEmail}) : super(key: key);
-
-  final String currentUserEmail;
+  const StartNewChatScreen({Key key}) : super(key: key);
 
   @override
   _StartNewChatScreenState createState() => _StartNewChatScreenState();
@@ -20,6 +19,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
   final TextEditingController _textEditingController = TextEditingController();
 
   QuerySnapshot _searchSnapshot;
+  QuerySnapshot currentUserSnapshot;
   String _error = '';
 
   void searchByEmailAddress() {
@@ -39,8 +39,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
     }
   }
 
-  void createChatRoom(
-      {String searchedUserEmail, String profilePic, String name}) async {
+  void createChatRoom({Map<String, dynamic> searchedUserData}) async {
     String getChatRoomID(String a, String b) {
       if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
         return '$b\_$a';
@@ -49,30 +48,50 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
       }
     }
 
-    if (searchedUserEmail == widget.currentUserEmail) {
+    final currentUser = AppUser.fromJson(currentUserSnapshot.docs[0].data());
+    final searchedUser = AppUser.fromJson(searchedUserData);
+
+    if (searchedUser.email == currentUser.email) {
       setState(() {
         _error = 'You cannot chat with yourself';
       });
     } else {
-      String chatRoomID =
-          getChatRoomID(searchedUserEmail, widget.currentUserEmail);
+      List<Map<String, dynamic>> users = [
+        currentUser.toJson(),
+        searchedUser.toJson(),
+      ];
 
-      List<String> users = [searchedUserEmail, widget.currentUserEmail];
-      Map<String, dynamic> chatRoomMap = {
-        'users  ': users,
+      String chatRoomID = getChatRoomID(searchedUser.email, currentUser.email);
+
+      Map<String, Object> chatRoomMap = {
+        'users': users,
         'chatRoomID': chatRoomID,
       };
 
       _databaseService.createChatRoom(chatRoomID, chatRoomMap);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return ChatRoomScreen(
-          name: name,
-          profilePic: profilePic,
-          chatRoomID: chatRoomID,
-          currentUserEmail: widget.currentUserEmail,
-        );
-      }));
+
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ChatRoomScreen(
+                    name: searchedUser.name,
+                    email: searchedUser.email,
+                    profilePic: searchedUser.profilePic,
+                    chatRoomID: chatRoomID,
+                  )));
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _databaseService
+        .searchUserByEmail(_databaseService.currentUserEmail)
+        .then((value) {
+      setState(() {
+        currentUserSnapshot = value;
+      });
+    });
   }
 
   @override
@@ -128,13 +147,8 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
                         itemCount: _searchSnapshot.docs.length,
                         itemBuilder: (BuildContext context, int index) {
                           final data = _searchSnapshot.docs[index].data();
-
                           return GestureDetector(
-                            onTap: () => createChatRoom(
-                              name: data['name'],
-                              profilePic: data['profilePic'],
-                              searchedUserEmail: data['email'],
-                            ),
+                            onTap: () => createChatRoom(searchedUserData: data),
                             child: ListTile(
                               leading: CircleAvatar(
                                   backgroundImage:

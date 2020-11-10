@@ -1,18 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yaanyo/screens/chat_room_screen.dart';
 
 class ChatListTile extends StatelessWidget {
   const ChatListTile({
     Key key,
     this.userName,
     this.lastMessage,
-    this.chatRoomID,
-    this.currentUserEmail,
     this.profilePic,
+    this.onPress,
   }) : super(key: key);
 
-  final String userName, profilePic, lastMessage, chatRoomID, currentUserEmail;
+  final String userName, profilePic, lastMessage;
+  final Function onPress;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +19,7 @@ class ChatListTile extends StatelessWidget {
       children: [
         Expanded(
           child: ListTile(
+            onTap: onPress,
             leading: CircleAvatar(
               radius: 28,
               backgroundImage: NetworkImage(profilePic),
@@ -39,18 +39,6 @@ class ChatListTile extends StatelessWidget {
                 Icon(Icons.done_all),
               ],
             ),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return ChatRoomScreen(
-                    name: userName,
-                    chatRoomID: chatRoomID,
-                    currentUserEmail: currentUserEmail,
-                    profilePic: profilePic,
-                  );
-                },
-              ));
-            },
           ),
         ),
       ],

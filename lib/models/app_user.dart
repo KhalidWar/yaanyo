@@ -8,7 +8,7 @@ class AppUser {
 
   final String uid, name, email, profilePic;
 
-  factory AppUser.fromJson(Map<String, String> json) {
+  factory AppUser.fromJson(Map<String, dynamic> json) {
     return AppUser(
       uid: json['uid'],
       name: json['name'],

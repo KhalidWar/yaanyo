@@ -1,37 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
-import 'package:yaanyo/services/auth_service.dart';
 import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 import 'package:yaanyo/widgets/chat_list_tile.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
+import '../chat_room_screen.dart';
 import '../start_new_chat_screen.dart';
 
 class ChatTab extends StatefulWidget {
-  static const String id = 'chat_screen';
-
-  const ChatTab({Key key, this.currentUserEmail, this.currentUserName})
-      : super(key: key);
-  final String currentUserEmail;
-  final String currentUserName;
+  const ChatTab({Key key}) : super(key: key);
 
   @override
   _ChatTabState createState() => _ChatTabState();
 }
 
 class _ChatTabState extends State<ChatTab> {
-  final DatabaseService _databaseService = DatabaseService();
-
   Stream<QuerySnapshot> _chatStream;
-  QuerySnapshot _userSnapshot;
 
   @override
   void initState() {
     super.initState();
-    Stream<QuerySnapshot> chatsStream =
-        _databaseService.getChatRooms(widget.currentUserEmail);
-    _chatStream = chatsStream;
+    _chatStream = serviceLocator<DatabaseService>().getChatRooms();
   }
 
   @override
@@ -44,49 +35,39 @@ class _ChatTabState extends State<ChatTab> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               return WarningWidget(
-                iconData: Icons.warning_amber_rounded,
-                label:
-                    'No Internet Connection \n Please make sure you\'re online',
-                buttonLabel: 'Try again',
-                buttonOnPress: () {},
-              );
+                  iconData: Icons.warning_amber_rounded,
+                  label:
+                      'No Internet Connection \n Please make sure you\'re online',
+                  buttonLabel: 'Try again',
+                  buttonOnPress: () {});
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.data.documents.isEmpty) {
                 return WarningWidget(
-                  iconData: Icons.hourglass_empty,
-                  label: 'Chat list is empty ',
-                  buttonOnPress: () {},
-                );
+                    iconData: Icons.hourglass_empty,
+                    label: 'Chat list is empty ',
+                    buttonOnPress: () {});
               } else if (snapshot.hasData) {
                 return ListView.builder(
                   shrinkWrap: true,
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (BuildContext context, int index) {
-                    //todo get userName instead of email
-                    //todo get profilePic for those emails
-                    String otherUserEmail = snapshot.data.documents[index]
-                        .data()['chatRoomID']
-                        .toString()
-                        .replaceAll('_', '')
-                        .replaceAll('${widget.currentUserEmail}', '');
-
-                    _databaseService.searchUserByEmail(otherUserEmail).then(
-                      (value) {
-                        setState(() {
-                          _userSnapshot = value;
-                        });
-                      },
-                    );
-
+                    final data = snapshot.data.documents[index].data();
                     return ChatListTile(
-                      userName: otherUserEmail,
-                      profilePic: AuthService().defaultProfilePic,
+                      userName: data['users'][1]['name'],
+                      profilePic: data['users'][1]['profilePic'],
                       lastMessage: 'Yea, that\'s a good idea',
-                      chatRoomID:
-                          snapshot.data.documents[index].data()['chatRoomID'],
-                      currentUserEmail: widget.currentUserEmail,
+                      onPress: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatRoomScreen(
+                                  name: data['users'][1]['name'],
+                                  email: data['users'][1]['email'],
+                                  profilePic: data['users'][1]['profilePic'],
+                                  chatRoomID: data['chatRoomID'],
+                                )),
+                      ),
                     );
                   },
                 );
@@ -95,12 +76,8 @@ class _ChatTabState extends State<ChatTab> {
                   iconData: Icons.warning_amber_rounded,
                   label: 'Something went wrong. \n Please sign in again!',
                   buttonLabel: 'Sign in again',
-                  buttonOnPress: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) {
-                      return SignInScreen();
-                    }));
-                  },
+                  buttonOnPress: () => Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => SignInScreen())),
                 );
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -118,9 +95,7 @@ class _ChatTabState extends State<ChatTab> {
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return StartNewChatScreen(
-              currentUserEmail: widget.currentUserEmail,
-            );
+            return StartNewChatScreen();
           },
         ));
       },

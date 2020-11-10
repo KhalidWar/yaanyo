@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: _selectedIndexStack,
         children: [
-          ChatTab(currentUserEmail: currentUserEmail),
+          ChatTab(),
           ShoppingTab(),
           ProfileTab(currentUserStream: currentUserStream),
         ],

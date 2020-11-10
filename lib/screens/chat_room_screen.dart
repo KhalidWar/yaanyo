@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/models/message.dart';
 import 'package:yaanyo/services/database_service.dart';
+import 'package:yaanyo/services/service_locator.dart';
 import 'package:yaanyo/widgets/message_tile.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
@@ -11,28 +12,31 @@ class ChatRoomScreen extends StatefulWidget {
     this.name,
     this.profilePic,
     this.chatRoomID,
-    this.currentUserEmail,
+    this.email,
   }) : super(key: key);
 
-  final String name, profilePic, chatRoomID, currentUserEmail;
+  final String name, email, profilePic, chatRoomID;
 
   @override
   _ChatRoomScreenState createState() => _ChatRoomScreenState();
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  final TextEditingController _messageInputController = TextEditingController();
-  final DatabaseService _databaseService = DatabaseService();
+  final _databaseService = serviceLocator<DatabaseService>();
 
-  Stream _chatMessageStream;
+  final TextEditingController _messageInputController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  Stream<QuerySnapshot> _chatMessageStream;
 
   void _sendMessage() async {
-    if (_messageInputController.text.isNotEmpty) {
+    if (_formKey.currentState.validate()) {
       final message = Message(
           message: _messageInputController.text,
           time: DateTime.now().millisecondsSinceEpoch,
-          sender: widget.currentUserEmail);
+          sender: _databaseService.currentUserEmail);
       await _databaseService.addMessage(widget.chatRoomID, message);
+      _messageInputController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -46,11 +50,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
-    Stream<QuerySnapshot> conversationStream =
-        _databaseService.getConversations(widget.chatRoomID);
-    setState(() {
-      _chatMessageStream = conversationStream;
-    });
+    _chatMessageStream = _databaseService.getConversations(widget.chatRoomID);
   }
 
   @override
@@ -70,37 +70,34 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     switch (snapshot.connectionState) {
                       case ConnectionState.none:
                         return WarningWidget(
-                          iconData: Icons.warning_amber_rounded,
-                          label:
-                              'No Internet Connection \n Please make sure you\'re online',
-                          buttonLabel: 'Try again',
-                          buttonOnPress: () {},
-                        );
+                            iconData: Icons.warning_amber_rounded,
+                            label:
+                                'No Internet Connection \n Please make sure you\'re online',
+                            buttonLabel: 'Try again',
+                            buttonOnPress: () {});
                       case ConnectionState.waiting:
                         return Center(child: CircularProgressIndicator());
-
                       default:
                         if (snapshot.hasData) {
                           return ListView.builder(
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return MessageTile(
-                                message: snapshot.data.documents[index]
-                                    .data()['message'],
-                                sentByMe: snapshot.data.documents[index]
-                                        .data()['sendBy'] ==
-                                    widget.currentUserEmail,
-                              );
-                            },
-                          );
+                              reverse: true,
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final data =
+                                    snapshot.data.documents[index].data();
+                                return MessageTile(
+                                  message: data['message'],
+                                  sender: data['sender'] ==
+                                      _databaseService.currentUserEmail,
+                                );
+                              });
                         } else if (snapshot.hasError) {
                           return WarningWidget(
-                            iconData: Icons.warning_amber_rounded,
-                            label:
-                                'Something went wrong. \n Please sign in again!',
-                            buttonLabel: 'Try again',
-                            buttonOnPress: () {},
-                          );
+                              iconData: Icons.warning_amber_rounded,
+                              label:
+                                  'Something went wrong.\nPlease sign in again!',
+                              buttonLabel: 'Try again',
+                              buttonOnPress: () {});
                         } else {
                           return Center(child: CircularProgressIndicator());
                         }
@@ -125,16 +122,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       onPressed: () {},
                     ),
                     Expanded(
-                      child: TextField(
-                        controller: _messageInputController,
-                        textInputAction: TextInputAction.send,
-                        onSubmitted: (value) {
-                          _sendMessage();
-                          _messageInputController.clear();
-                        },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Message...',
+                      child: Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          controller: _messageInputController,
+                          validator: (value) =>
+                              value.isEmpty ? 'Email can not be empty' : null,
+                          textInputAction: TextInputAction.send,
+                          onFieldSubmitted: (value) => _sendMessage(),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Message...',
+                          ),
                         ),
                       ),
                     ),
@@ -145,10 +144,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     ),
                     IconButton(
                       icon: Icon(Icons.send),
-                      onPressed: () {
-                        _sendMessage();
-                        _messageInputController.clear();
-                      },
+                      onPressed: () => _sendMessage(),
                     ),
                   ],
                 ),
@@ -162,17 +158,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleAvatar(backgroundImage: NetworkImage(widget.profilePic)),
-          SizedBox(width: 10),
-          Text(widget.name),
-        ],
-      ),
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios),
-        onPressed: () => Navigator.pop(context),
+      title: ListTile(
+        contentPadding: EdgeInsets.all(0),
+        selected: false,
+        leading: CircleAvatar(backgroundImage: NetworkImage(widget.profilePic)),
+        title: Text(widget.name, style: Theme.of(context).textTheme.headline6),
+        subtitle: Text(widget.email),
       ),
       actions: [
         IconButton(

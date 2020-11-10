@@ -4,24 +4,24 @@ class MessageTile extends StatelessWidget {
   const MessageTile({
     Key key,
     this.message,
-    this.sentByMe,
+    this.sender,
   }) : super(key: key);
 
   final String message;
-  final bool sentByMe;
+  final bool sender;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
-      alignment: sentByMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: sender ? Alignment.centerRight : Alignment.centerLeft,
       margin: EdgeInsets.symmetric(vertical: 4),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: sentByMe ? Colors.blue[300] : Colors.grey[300],
-          borderRadius: sentByMe
+          color: sender ? Colors.blue[300] : Colors.grey[300],
+          borderRadius: sender
               ? BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),

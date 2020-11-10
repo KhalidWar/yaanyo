@@ -8,6 +8,7 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _chatRoomsCollection =
       FirebaseFirestore.instance.collection('chatRooms');
+  final currentUserEmail = FirebaseAuth.instance.currentUser.email;
 
   Future addUserToDatabase({AppUser appUser}) async {
     return await _usersCollection.doc(appUser.email).set(appUser.toJson());
@@ -40,20 +41,20 @@ class DatabaseService {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getChatRooms(String userEmail) {
+  Stream<QuerySnapshot> getChatRooms() {
     return _chatRoomsCollection
-        .where('users', arrayContains: userEmail)
+        // .where('users'[0]['email'], arrayContains: currentUserEmail)
         .snapshots();
   }
 
   Stream<QuerySnapshot> getCurrentUserStream() {
-    final email = FirebaseAuth.instance.currentUser.email;
-    return _usersCollection.where('email', isEqualTo: email).snapshots();
+    return _usersCollection
+        .where('email', isEqualTo: currentUserEmail)
+        .snapshots();
   }
 
   Future updateUserName(String newName) async {
-    final email = FirebaseAuth.instance.currentUser.email;
     final newNameMap = {'name': newName};
-    return await _usersCollection.doc(email).update(newNameMap);
+    return await _usersCollection.doc(currentUserEmail).update(newNameMap);
   }
 }
