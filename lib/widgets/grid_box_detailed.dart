@@ -18,10 +18,6 @@ class GridBoxDetailed extends StatelessWidget {
     return Scaffold(
       backgroundColor: mainColor,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Text(appBarTitle),
         backgroundColor: mainColor,
         elevation: 0,

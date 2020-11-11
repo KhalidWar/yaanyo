@@ -51,6 +51,7 @@ class _ChatTabState extends State<ChatTab> {
               } else if (snapshot.hasData) {
                 return ListView.builder(
                   shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (BuildContext context, int index) {
                     final data = snapshot.data.documents[index].data();

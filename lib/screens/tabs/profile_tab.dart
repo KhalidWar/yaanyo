@@ -50,72 +50,76 @@ class _ProfileTabState extends State<ProfileTab> {
             if (snapshot.hasData) {
               final data = snapshot.data.docs[0].data();
               return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      height: size.height * 0.3,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {},
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage('${data['profilePic']}'),
-                              radius: 80,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 50,
-                            right: 5,
-                            child: Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(50),
+                child: Container(
+                  height: size.height * 0.8,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        height: size.height * 0.3,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {},
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage('${data['profilePic']}'),
+                                radius: 80,
                               ),
-                              child: Icon(Icons.camera_alt_outlined),
                             ),
-                          )
-                        ],
+                            Positioned(
+                              bottom: 50,
+                              right: 5,
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Icon(Icons.camera_alt_outlined),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.account_circle_outlined, size: 40),
-                      title: Text('${data['name']}',
-                          style: Theme.of(context).textTheme.bodyText1),
-                      subtitle: Text('Tap to change your name'),
-                      onTap: () => showDialog(
-                          context: context,
-                          builder: (context) {
-                            return buildAlertDialog(data, context);
-                          }),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.email_outlined, size: 40),
-                      title: Text('${data['email']}',
-                          style: Theme.of(context).textTheme.bodyText1),
-                      subtitle: Text(
-                          'Manage email settings including email notifications'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.lock_outline, size: 40),
-                      title: Text('Security & Privacy',
-                          style: Theme.of(context).textTheme.bodyText1),
-                      subtitle:
-                          Text('Manage password, 2FA, and linked accounts'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading:
-                          Icon(Icons.notifications_none_outlined, size: 40),
-                      title: Text('Notifications',
-                          style: Theme.of(context).textTheme.bodyText1),
-                      subtitle: Text('Manage App Notifications'),
-                      onTap: () {},
-                    ),
-                  ],
+                      ListTile(
+                        leading: Icon(Icons.account_circle_outlined, size: 40),
+                        title: Text('${data['name']}',
+                            style: Theme.of(context).textTheme.bodyText1),
+                        subtitle: Text('Tap to change your name'),
+                        onTap: () => showDialog(
+                            context: context,
+                            builder: (context) {
+                              return buildAlertDialog(data, context);
+                            }),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.email_outlined, size: 40),
+                        title: Text('${data['email']}',
+                            style: Theme.of(context).textTheme.bodyText1),
+                        subtitle: Text(
+                            'Manage email settings including email notifications'),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.lock_outline, size: 40),
+                        title: Text('Security & Privacy',
+                            style: Theme.of(context).textTheme.bodyText1),
+                        subtitle:
+                            Text('Manage password, 2FA, and linked accounts'),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        leading:
+                            Icon(Icons.notifications_none_outlined, size: 40),
+                        title: Text('Notifications',
+                            style: Theme.of(context).textTheme.bodyText1),
+                        subtitle: Text('Manage App Notifications'),
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else if (snapshot.hasError) {

@@ -33,11 +33,11 @@ class DatabaseService {
         .catchError((e) => print(e.toString()));
   }
 
-  Stream<QuerySnapshot> getConversations(String chatRoomID) {
+  Stream<QuerySnapshot> getChatMessages(String chatRoomID) {
     return _chatRoomsCollection
         .doc(chatRoomID)
         .collection('chats')
-        .orderBy('time', descending: false)
+        .orderBy('time', descending: true)
         .snapshots();
   }
 
