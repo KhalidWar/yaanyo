@@ -28,7 +28,7 @@ Real time chat and shopping checklist made with flutter utilizing Firebase and F
 - Streams. Streams everywhere. currentUserStream in ProfileTab. chatSream in ChatTab. messageStream...etc.
 
 ## Cloud Firestore Data Structure
-<img src="assets/readme/firestore_data_structure.png" width="300">
+<img src="assets/readme/firestore_data_structure.png">
 
 
 ## Installation
