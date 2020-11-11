@@ -1,5 +1,5 @@
 # Yaanyo
-Shopping list and chat app made with flutter utilizing Firebase as backend and Cloud Firestore as database.
+Real time chat and shopping checklist made with flutter utilizing Firebase and Firestore as backend.
 
 
 ## Screenshots
@@ -7,8 +7,8 @@ Shopping list and chat app made with flutter utilizing Firebase as backend and C
 
 
 ## Features
-- Chat with friends and family.
-- Add items to your shopping on the go.
+- Real time chat.
+- Add items to your shopping list on the go.
 - Shopping lists catagorized by stores.
 
 
@@ -18,6 +18,17 @@ Shopping list and chat app made with flutter utilizing Firebase as backend and C
 - [Firebase Auth](https://pub.dev/packages/firebase_auth)
 - [Cloud Firestore](https://pub.dev/packages/cloud_firestore)
 - [Flutter SVG](https://pub.dev/packages/flutter_svg)
+- [Get_It](https://pub.dev/packages/get_it)
+
+
+## Overview of how it works
+- Authenticate via email and password managed by [Firebase Auth](https://pub.dev/packages/firebase_auth).
+- If successful, log user in and upload user name, email, profile pic, and UID to [Cloud Firestore](https://pub.dev/packages/cloud_firestore) for safe keeping and easy access.
+- To achieve "real time" interactivity, we are heavily utilizing [Stream](https://api.flutter.dev/flutter/dart-async/Stream-class.html) and [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html) everywhere possible.
+- Streams. Streams everywhere. currentUserStream in ProfileTab. chatSream in ChatTab. messageStream...etc.
+
+## Cloud Firestore Data Structure
+<img src="assets/readme/firestore_data_structure.png" width="300">
 
 
 ## Installation
