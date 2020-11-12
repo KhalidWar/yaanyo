@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class Message {
@@ -8,7 +9,7 @@ class Message {
   });
 
   final String sender, message;
-  final int time;
+  final Timestamp time;
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(

@@ -32,7 +32,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (_messageInputController.text.isNotEmpty) {
       final message = Message(
           message: _messageInputController.text,
-          time: DateTime.now().millisecondsSinceEpoch,
+          time: Timestamp.now(),
           sender: _databaseService.currentUserEmail);
       await _databaseService.addMessage(widget.chatRoomID, message);
       _messageInputController.clear();
@@ -75,8 +75,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   default:
                     if (snapshot.hasData) {
                       return ListView.builder(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: EdgeInsets.symmetric(horizontal: 12),
                           physics: BouncingScrollPhysics(),
                           reverse: true,
                           itemCount: snapshot.data.documents.length,
@@ -84,6 +83,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             final data = snapshot.data.documents[index].data();
                             return MessageTile(
                               message: data['message'],
+                              time: data['time'],
                               sender: data['sender'] ==
                                   _databaseService.currentUserEmail,
                             );
@@ -120,6 +120,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     controller: _messageInputController,
                     textInputAction: TextInputAction.send,
                     onFieldSubmitted: (value) => _sendMessage(),
+                    textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Message...',

@@ -145,6 +145,7 @@ class _ProfileTabState extends State<ProfileTab> {
               validator: (value) =>
                   value.isEmpty ? 'Name can not be empty' : null,
               autofocus: true,
+              textCapitalization: TextCapitalization.words,
               decoration: kTextFormInputDecoration.copyWith(
                   hintText: '${data['name']}'),
             ),
