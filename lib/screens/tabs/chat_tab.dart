@@ -55,17 +55,30 @@ class _ChatTabState extends State<ChatTab> {
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (BuildContext context, int index) {
                     final data = snapshot.data.documents[index].data();
+                    String name, email, profilePic;
+
+                    if (data['users'][1]['email'] ==
+                        serviceLocator<DatabaseService>().currentUserEmail) {
+                      name = data['users'][0]['name'];
+                      email = data['users'][0]['email'];
+                      profilePic = data['users'][0]['profilePic'];
+                    } else {
+                      name = data['users'][1]['name'];
+                      email = data['users'][1]['email'];
+                      profilePic = data['users'][1]['profilePic'];
+                    }
+
                     return ChatListTile(
-                      userName: data['users'][1]['name'],
-                      profilePic: data['users'][1]['profilePic'],
+                      userName: name,
+                      profilePic: profilePic,
                       lastMessage: 'Yea, that\'s a good idea',
                       onPress: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatRoomScreen(
-                                  name: data['users'][1]['name'],
-                                  email: data['users'][1]['email'],
-                                  profilePic: data['users'][1]['profilePic'],
+                                  name: name,
+                                  email: email,
+                                  profilePic: profilePic,
                                   chatRoomID: data['chatRoomID'],
                                 )),
                       ),

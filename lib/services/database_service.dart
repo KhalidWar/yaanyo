@@ -42,8 +42,9 @@ class DatabaseService {
   }
 
   Stream<QuerySnapshot> getChatRooms() {
-    return _chatRoomsCollection
-        // .where('users'[0]['email'], arrayContains: currentUserEmail)
+    return FirebaseFirestore.instance
+        .collection('chatRooms')
+        .where('emails', arrayContains: currentUserEmail)
         .snapshots();
   }
 

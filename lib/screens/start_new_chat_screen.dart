@@ -66,6 +66,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
       Map<String, Object> chatRoomMap = {
         'users': users,
         'chatRoomID': chatRoomID,
+        'emails': [currentUser.email, searchedUser.email]
       };
 
       _databaseService.createChatRoom(chatRoomID, chatRoomMap);
