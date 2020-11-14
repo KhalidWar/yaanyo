@@ -41,6 +41,15 @@ class DatabaseService {
         .snapshots();
   }
 
+  Future<String> getLastMessage(String chatRoomID) async {
+    return await _chatRoomsCollection
+        .doc(chatRoomID)
+        .collection('chats')
+        .orderBy('time', descending: true)
+        .get()
+        .then((value) => value.docs[0].data()['message']);
+  }
+
   Stream<QuerySnapshot> getChatRooms() {
     return FirebaseFirestore.instance
         .collection('chatRooms')

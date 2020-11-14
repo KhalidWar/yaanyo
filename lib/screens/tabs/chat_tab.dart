@@ -19,6 +19,8 @@ class ChatTab extends StatefulWidget {
 class _ChatTabState extends State<ChatTab> {
   Stream<QuerySnapshot> _chatStream;
 
+  String lastMessage;
+
   @override
   void initState() {
     super.initState();
@@ -68,10 +70,16 @@ class _ChatTabState extends State<ChatTab> {
                       profilePic = data['users'][1]['profilePic'];
                     }
 
+                    serviceLocator<DatabaseService>()
+                        .getLastMessage(data['chatRoomID'])
+                        .then((value) {
+                      lastMessage = value;
+                    });
+
                     return ChatListTile(
                       userName: name,
                       profilePic: profilePic,
-                      lastMessage: 'Yea, that\'s a good idea',
+                      lastMessage: lastMessage ?? '...',
                       onPress: () => Navigator.push(
                         context,
                         MaterialPageRoute(
