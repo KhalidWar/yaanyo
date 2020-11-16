@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 
 class GridBox extends StatelessWidget {
   const GridBox({
     Key key,
     this.onPress,
     this.gridColor,
-    this.shopName,
-    this.checkBoxValue,
-    this.checkBoxTitle,
-    this.shopIcon,
+    this.storeName,
+    this.storeIcon,
   }) : super(key: key);
 
   final Function onPress;
-  final Color gridColor;
-  final String shopIcon, shopName, checkBoxTitle;
-  final bool checkBoxValue;
+  final ColorSwatch gridColor;
+  final String storeIcon, storeName;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +30,13 @@ class GridBox extends StatelessWidget {
           children: [
             Expanded(
               child: SvgPicture.asset(
-                shopIcon,
+                storeIcon,
                 width: size.width,
                 height: size.height,
               ),
             ),
             Text(
-              shopName,
+              '$storeName',
               style: Theme.of(context).textTheme.bodyText1,
             ),
           ],

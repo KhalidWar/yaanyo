@@ -8,17 +8,20 @@ class WarningWidget extends StatelessWidget {
     this.buttonLabel,
     this.buttonOnPress,
     this.color,
+    this.scaffoldColor,
   }) : super(key: key);
 
   final String label, buttonLabel;
   final IconData iconData;
   final Function buttonOnPress;
-  final Color color;
+  final Color color, scaffoldColor;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor:
+          scaffoldColor == null ? Colors.transparent : scaffoldColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

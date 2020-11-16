@@ -2,13 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/models/message.dart';
+import 'package:yaanyo/models/shopping.dart';
+import 'package:yaanyo/models/shopping_task.dart';
 
 class DatabaseService {
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _chatRoomsCollection =
       FirebaseFirestore.instance.collection('chatRooms');
+  final CollectionReference _shoppingCollection =
+      FirebaseFirestore.instance.collection('shopping');
+
   final currentUserEmail = FirebaseAuth.instance.currentUser.email;
+  final currentUserUID = FirebaseAuth.instance.currentUser.uid;
 
   Future addUserToDatabase({AppUser appUser}) async {
     return await _usersCollection.doc(appUser.email).set(appUser.toJson());
@@ -51,8 +57,7 @@ class DatabaseService {
   }
 
   Stream<QuerySnapshot> getChatRooms() {
-    return FirebaseFirestore.instance
-        .collection('chatRooms')
+    return _chatRoomsCollection
         .where('emails', arrayContains: currentUserEmail)
         .snapshots();
   }
@@ -66,5 +71,33 @@ class DatabaseService {
   Future updateUserName(String newName) async {
     final newNameMap = {'name': newName};
     return await _usersCollection.doc(currentUserEmail).update(newNameMap);
+  }
+
+  Future createNewGridBox({Shopping shopping}) async {
+    _shoppingCollection.doc(shopping.storeName)
+      ..set(shopping.toJson())
+      ..collection(shopping.storeName);
+  }
+
+  Stream<QuerySnapshot> getShoppingGridStream() {
+    return _shoppingCollection
+        .where('uid', isEqualTo: currentUserUID)
+        // .orderBy('time', descending: false)
+        .snapshots();
+  }
+
+  Future addShoppingTask({String storeName, ShoppingTask shoppingTask}) async {
+    _shoppingCollection
+        .doc(storeName)
+        .collection('tasks')
+        .add(shoppingTask.toJson());
+  }
+
+  Stream<QuerySnapshot> getShoppingTaskStream(String storeName) {
+    return _shoppingCollection
+        .doc(storeName)
+        .collection('tasks')
+        .orderBy('time', descending: false)
+        .snapshots();
   }
 }
