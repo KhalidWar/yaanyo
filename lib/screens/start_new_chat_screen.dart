@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/models/app_user.dart';
@@ -87,7 +88,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
   void initState() {
     super.initState();
     _databaseService
-        .searchUserByEmail(_databaseService.currentUserEmail)
+        .searchUserByEmail(FirebaseAuth.instance.currentUser.email)
         .then((value) {
       setState(() {
         currentUserSnapshot = value;

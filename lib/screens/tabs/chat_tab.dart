@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/services/database_service.dart';
@@ -60,7 +61,7 @@ class _ChatTabState extends State<ChatTab> {
                     String name, email, profilePic;
 
                     if (data['users'][1]['email'] ==
-                        serviceLocator<DatabaseService>().currentUserEmail) {
+                        FirebaseAuth.instance.currentUser.email) {
                       name = data['users'][0]['name'];
                       email = data['users'][0]['email'];
                       profilePic = data['users'][0]['profilePic'];

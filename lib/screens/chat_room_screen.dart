@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/models/message.dart';
 import 'package:yaanyo/services/database_service.dart';
@@ -23,6 +24,7 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final _databaseService = serviceLocator<DatabaseService>();
+  final currentUserEmail = FirebaseAuth.instance.currentUser.email;
 
   final TextEditingController _messageInputController = TextEditingController();
 
@@ -33,7 +35,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       final message = Message(
           message: _messageInputController.text,
           time: Timestamp.now(),
-          sender: _databaseService.currentUserEmail);
+          sender: currentUserEmail);
       await _databaseService.addMessage(widget.chatRoomID, message);
       _messageInputController.clear();
     } else {
@@ -84,8 +86,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             return MessageTile(
                               message: data['message'],
                               time: data['time'],
-                              sender: data['sender'] ==
-                                  _databaseService.currentUserEmail,
+                              sender: data['sender'] == currentUserEmail,
                             );
                           });
                     } else if (snapshot.hasError) {

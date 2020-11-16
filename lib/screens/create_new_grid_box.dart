@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
@@ -30,7 +31,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
         storeIcon: storeIconList[_selectedIndex],
         time: Timestamp.now(),
         gridColorInt: gridColorList.indexOf(_mainColor),
-        uid: serviceLocator<DatabaseService>().currentUserUID,
+        uid: FirebaseAuth.instance.currentUser.uid,
       );
       serviceLocator<DatabaseService>().createNewGridBox(shopping: shopping);
       Navigator.pop(context);

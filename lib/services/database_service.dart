@@ -13,9 +13,6 @@ class DatabaseService {
   final CollectionReference _shoppingCollection =
       FirebaseFirestore.instance.collection('shopping');
 
-  final currentUserEmail = FirebaseAuth.instance.currentUser.email;
-  final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-
   Future addUserToDatabase({AppUser appUser}) async {
     return await _usersCollection.doc(appUser.email).set(appUser.toJson());
   }
@@ -57,18 +54,21 @@ class DatabaseService {
   }
 
   Stream<QuerySnapshot> getChatRooms() {
+    final currentUserEmail = FirebaseAuth.instance.currentUser.email;
     return _chatRoomsCollection
         .where('emails', arrayContains: currentUserEmail)
         .snapshots();
   }
 
   Stream<QuerySnapshot> getCurrentUserStream() {
+    final currentUserEmail = FirebaseAuth.instance.currentUser.email;
     return _usersCollection
         .where('email', isEqualTo: currentUserEmail)
         .snapshots();
   }
 
   Future updateUserName(String newName) async {
+    final currentUserEmail = FirebaseAuth.instance.currentUser.email;
     final newNameMap = {'name': newName};
     return await _usersCollection.doc(currentUserEmail).update(newNameMap);
   }
@@ -80,6 +80,7 @@ class DatabaseService {
   }
 
   Stream<QuerySnapshot> getShoppingGridStream() {
+    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     return _shoppingCollection
         .where('uid', isEqualTo: currentUserUID)
         // .orderBy('time', descending: false)
