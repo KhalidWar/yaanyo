@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/settings_screen.dart';
 import 'package:yaanyo/screens/tabs/profile_tab.dart';
 import 'package:yaanyo/screens/tabs/shopping_tab.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/service_locator.dart';
 
 import 'tabs/chat_tab.dart';
 
@@ -15,8 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Stream<QuerySnapshot> currentUserStream;
-
   int _selectedIndexStack = 0;
   String currentUserEmail;
   String currentUserName;
@@ -28,13 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    currentUserStream =
-        serviceLocator<DatabaseService>().getCurrentUserStream();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
@@ -43,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           ChatTab(),
           ShoppingTab(),
-          ProfileTab(currentUserStream: currentUserStream),
+          ProfileTab(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

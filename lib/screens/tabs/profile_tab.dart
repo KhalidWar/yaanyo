@@ -1,13 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/services/database_service.dart';
 import 'package:yaanyo/services/service_locator.dart';
+import 'package:yaanyo/widgets/warning_widget.dart';
 
 import '../../constants.dart';
 
 class ProfileTab extends StatefulWidget {
-  const ProfileTab({Key key, this.currentUserStream}) : super(key: key);
-  final Stream currentUserStream;
+  const ProfileTab({Key key}) : super(key: key);
   static const String id = 'profile_screen';
 
   @override
@@ -17,6 +18,8 @@ class ProfileTab extends StatefulWidget {
 class _ProfileTabState extends State<ProfileTab> {
   final TextEditingController _textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  Stream<QuerySnapshot> currentUserStream;
 
   String _error = '';
 
@@ -36,14 +39,26 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    currentUserStream =
+        serviceLocator<DatabaseService>().getCurrentUserStream();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return StreamBuilder(
-      stream: widget.currentUserStream,
+      stream: currentUserStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-          // return ConnectionNone;
+            return WarningWidget(
+                iconData: Icons.warning_amber_rounded,
+                label:
+                    'No Internet Connection \n Please make sure you\'re online',
+                buttonLabel: 'Try again',
+                buttonOnPress: () {});
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator());
           default:
