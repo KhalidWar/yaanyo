@@ -3,9 +3,9 @@ Real time chat and shopping checklist made with flutter utilizing Firebase and C
 
 
 ## Screenshots
-<img src="readme_assets/sign_in.jpg" width="150"> <img src="readme_assets/chat_tab_empty.jpg" width="150"> <img src="readme_assets/start_new_chat.jpg" width="150"> <img src="readme_assets/chat_screen.jpg" width="150"> <img src="readme_assets/profile_tab.jpg" width="150">
-<img src="readme_assets/chat_tab.jpg" width="150"> <img src="readme_assets/chat_screen_reply.jpg" width="150">
-<img src="readme_assets/shopping_tab_empty.jpg" width="150"> <img src="readme_assets/create_new_grid.jpg" width="150"> <img src="readme_assets/shopping_tab_grids.jpg" width="150"> <img src="readme_assets/shopping_task_screen.jpg" width="150"> <img src="readme_assets/shopping_task_screen2.jpg" width="150">
+<img src="readme_assets/sign_in.jpg" width="200"> <img src="readme_assets/chat_tab_empty.jpg" width="200"> <img src="readme_assets/start_new_chat.jpg" width="200"> <img src="readme_assets/chat_screen.jpg" width="200"> <img src="readme_assets/profile_tab.jpg" width="200">
+<img src="readme_assets/chat_tab.jpg" width="200"> <img src="readme_assets/chat_screen_reply.jpg" width="200">
+<img src="readme_assets/shopping_tab_empty.jpg" width="200"> <img src="readme_assets/create_new_grid.jpg" width="200"> <img src="readme_assets/shopping_tab_grids.jpg" width="200"> <img src="readme_assets/shopping_task_screen.jpg" width="200"> <img src="readme_assets/shopping_task_screen2.jpg" width="200">
 
 
 ## Features
