@@ -1,5 +1,5 @@
 # Yaanyo
-Real time chat and shopping checklist made with flutter utilizing Firebase and Firestore as backend.
+Real time chat and shopping checklist made with flutter utilizing Firebase and Cloud Firestore as backend.
 
 
 ## Screenshots
@@ -7,9 +7,9 @@ Real time chat and shopping checklist made with flutter utilizing Firebase and F
 
 
 ## Features
-- Real time chat.
-- Add items to your shopping list on the go.
-- Shopping lists catagorized by stores.
+- Real time chat with family and friends.
+- Catagorize shopping tasks by colored grids.
+- Easily add tasks to shopping list on the go.
 
 
 ## Packages used
@@ -19,16 +19,18 @@ Real time chat and shopping checklist made with flutter utilizing Firebase and F
 - [Cloud Firestore](https://pub.dev/packages/cloud_firestore)
 - [Flutter SVG](https://pub.dev/packages/flutter_svg)
 - [Get_It](https://pub.dev/packages/get_it)
+- [Flutter Material Color Picker](https://pub.dev/packages/flutter_material_color_picker)
 
 
 ## Overview of how it works
 - Authenticate via email and password managed by [Firebase Auth](https://pub.dev/packages/firebase_auth).
 - If successful, log user in and upload user name, email, profile pic, and UID to [Cloud Firestore](https://pub.dev/packages/cloud_firestore) for safe keeping and easy access.
 - To achieve "real time" interactivity, we are heavily utilizing [Stream](https://api.flutter.dev/flutter/dart-async/Stream-class.html) and [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html) everywhere possible.
-- Streams. Streams everywhere. currentUserStream in ProfileTab. chatSream in ChatTab. messageStream...etc.
+- Streams. Streams everywhere.
+
 
 ## Cloud Firestore Data Structure
-<img src="assets/readme/firestore_data_structure.png">
+<img src="readme_assets/chatRooms.png"> <img src="readme_assets/chats.png"> <img src="readme_assets/shoppingGrid.png"> <img src="readme_assets/shoppingTask.png">
 
 
 ## Installation
@@ -45,7 +47,11 @@ Check out [Flutter's official guide](https://flutter.dev/docs/get-started/instal
 ### Steps
 - Clone this repo to your machine: `https://github.com/KhalidWar/yaanyo.git`
 - Run on Emulator or physical device
+- Sign up for an account
 - All set!
 
 ## License
 This project is licensed under [MIT Licnese](https://github.com/KhalidWar/yaanyo/blob/master/LICENSE).
+
+## Acknowledge
+Some profile pictures used in this projects are obtained from [Unplash](https://unsplash.com/).
