@@ -88,16 +88,18 @@ class DatabaseService {
   }
 
   Future addShoppingTask({String storeName, ShoppingTask shoppingTask}) async {
+    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     _shoppingCollection
         .doc(storeName)
-        .collection('tasks')
+        .collection('shoppingTasks $currentUserUID')
         .add(shoppingTask.toJson());
   }
 
   Stream<QuerySnapshot> getShoppingTaskStream(String storeName) {
+    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     return _shoppingCollection
         .doc(storeName)
-        .collection('tasks')
+        .collection('shoppingTasks $currentUserUID')
         .orderBy('time', descending: false)
         .snapshots();
   }
