@@ -1,25 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Shopping {
-  const Shopping({
+class ShoppingGrid {
+  const ShoppingGrid({
     this.storeName,
     this.storeIcon,
     this.gridColorInt,
     this.time,
-    this.uid,
   });
 
-  final String storeName, storeIcon, uid;
+  final String storeName, storeIcon;
   final int gridColorInt;
   final Timestamp time;
 
-  factory Shopping.fromJson(Map<String, dynamic> json) {
-    return Shopping(
+  factory ShoppingGrid.fromJson(Map<String, dynamic> json) {
+    return ShoppingGrid(
       storeName: json['storeName'],
       storeIcon: json['storeIcon'],
       gridColorInt: json['gridColorInt'],
       time: json['time'],
-      uid: json['uid'],
     );
   }
 
@@ -28,6 +26,5 @@ class Shopping {
         'storeIcon': storeIcon,
         'gridColorInt': gridColorInt,
         'time': time,
-        'uid': uid,
       };
 }

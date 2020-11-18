@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:yaanyo/models/shopping.dart';
+import 'package:yaanyo/models/shopping_grid.dart';
 import 'package:yaanyo/services/database_service.dart';
 import 'package:yaanyo/services/service_locator.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
@@ -26,14 +25,14 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
 
   void _createNewGridBox() {
     if (_formKey.currentState.validate()) {
-      Shopping shopping = Shopping(
+      ShoppingGrid shoppingGrid = ShoppingGrid(
         storeName: _textInputController.text.trim(),
         storeIcon: storeIconList[_selectedIndex],
         time: Timestamp.now(),
         gridColorInt: gridColorList.indexOf(_mainColor),
-        uid: FirebaseAuth.instance.currentUser.uid,
       );
-      serviceLocator<DatabaseService>().createNewGridBox(shopping: shopping);
+      serviceLocator<DatabaseService>()
+          .createNewShoppingGrid(shoppingGrid: shoppingGrid);
       Navigator.pop(context);
     }
   }

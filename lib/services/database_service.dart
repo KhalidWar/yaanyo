@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/models/message.dart';
-import 'package:yaanyo/models/shopping.dart';
+import 'package:yaanyo/models/shopping_grid.dart';
 import 'package:yaanyo/models/shopping_task.dart';
 
 class DatabaseService {
@@ -73,33 +73,41 @@ class DatabaseService {
     return await _usersCollection.doc(currentUserEmail).update(newNameMap);
   }
 
-  Future createNewGridBox({Shopping shopping}) async {
-    _shoppingCollection.doc(shopping.storeName)
-      ..set(shopping.toJson())
-      ..collection(shopping.storeName);
+  Future createNewShoppingGrid({ShoppingGrid shoppingGrid}) async {
+    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
+    _shoppingCollection
+        .doc(currentUserUID)
+        .collection('shoppingGrid')
+        .doc(shoppingGrid.storeName)
+        .set(shoppingGrid.toJson());
   }
 
   Stream<QuerySnapshot> getShoppingGridStream() {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     return _shoppingCollection
-        .where('uid', isEqualTo: currentUserUID)
-        // .orderBy('time', descending: false)
+        .doc(currentUserUID)
+        .collection('shoppingGrid')
+        .orderBy('time', descending: false)
         .snapshots();
   }
 
   Future addShoppingTask({String storeName, ShoppingTask shoppingTask}) async {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     _shoppingCollection
+        .doc(currentUserUID)
+        .collection('shoppingGrid')
         .doc(storeName)
-        .collection('shoppingTasks $currentUserUID')
+        .collection('shoppingTask')
         .add(shoppingTask.toJson());
   }
 
   Stream<QuerySnapshot> getShoppingTaskStream(String storeName) {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     return _shoppingCollection
+        .doc(currentUserUID)
+        .collection('shoppingGrid')
         .doc(storeName)
-        .collection('shoppingTasks $currentUserUID')
+        .collection('shoppingTask')
         .orderBy('time', descending: false)
         .snapshots();
   }
