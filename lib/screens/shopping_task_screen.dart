@@ -44,6 +44,16 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
     }
   }
 
+  void _toggleShoppingTask(bool toggle, String taskLabel) {
+    final ShoppingTask shoppingTask = ShoppingTask(
+        isDone: toggle, taskLabel: taskLabel, time: Timestamp.now());
+
+    serviceLocator<DatabaseService>().toggleShoppingTask(
+      storeName: widget.storeName,
+      shoppingTask: shoppingTask,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -108,10 +118,13 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                                 Checkbox(
                                   visualDensity: VisualDensity.compact,
                                   value: data['isDone'],
-                                  onChanged: (toggle) {},
+                                  onChanged: (toggle) => _toggleShoppingTask(
+                                    toggle,
+                                    data['taskLabel'],
+                                  ),
                                 ),
                                 Text(
-                                  data['taskLabel'] ?? '...',
+                                  data['taskLabel'],
                                   style: Theme.of(context).textTheme.bodyText1,
                                 ),
                               ],

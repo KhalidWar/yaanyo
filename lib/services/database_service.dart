@@ -98,7 +98,8 @@ class DatabaseService {
         .collection('shoppingGrid')
         .doc(storeName)
         .collection('shoppingTask')
-        .add(shoppingTask.toJson());
+        .doc(shoppingTask.taskLabel)
+        .set(shoppingTask.toJson());
   }
 
   Stream<QuerySnapshot> getShoppingTaskStream(String storeName) {
@@ -110,5 +111,17 @@ class DatabaseService {
         .collection('shoppingTask')
         .orderBy('time', descending: false)
         .snapshots();
+  }
+
+  Future toggleShoppingTask(
+      {ShoppingTask shoppingTask, String storeName}) async {
+    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
+    return await _shoppingCollection
+        .doc(currentUserUID)
+        .collection('shoppingGrid')
+        .doc(storeName)
+        .collection('shoppingTask')
+        .doc(shoppingTask.taskLabel)
+        .update(shoppingTask.toJson());
   }
 }
