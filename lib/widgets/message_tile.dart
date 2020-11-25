@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/utilities/utilities.dart';
 
 class MessageTile extends StatelessWidget {
   const MessageTile({
@@ -12,11 +13,6 @@ class MessageTile extends StatelessWidget {
   final String message;
   final Timestamp time;
   final bool sender;
-
-  String minutes(Timestamp time) {
-    int minute = time.toDate().minute;
-    return '$minute'.length == 1 ? '0$minute' : '$minute';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +48,7 @@ class MessageTile extends StatelessWidget {
             ),
             SizedBox(height: 5),
             Text(
-              '${time.toDate().hour}:${minutes(time)}',
+              '${time.toDate().hour}:${Utilities().getMinutesInDoubleDigits(time)}',
               style: TextStyle(color: Colors.black45),
             ),
           ],

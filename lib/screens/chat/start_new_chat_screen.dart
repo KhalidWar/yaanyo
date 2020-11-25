@@ -6,6 +6,7 @@ import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/screens/chat/chat_room_screen.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
 import 'package:yaanyo/services/database/user_database_service.dart';
+import 'package:yaanyo/utilities/utilities.dart';
 import 'package:yaanyo/widgets/error_text.dart';
 
 class StartNewChatScreen extends StatefulWidget {
@@ -41,14 +42,6 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
   }
 
   void createChatRoom({Map<String, dynamic> searchedUserData}) async {
-    String getChatRoomID(String a, String b) {
-      if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-        return '$b\_$a';
-      } else {
-        return '$a\_$b';
-      }
-    }
-
     final currentUser = AppUser.fromJson(currentUserSnapshot.docs[0].data());
     final searchedUser = AppUser.fromJson(searchedUserData);
 
@@ -62,7 +55,8 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
         searchedUser.toJson(),
       ];
 
-      String chatRoomID = getChatRoomID(searchedUser.email, currentUser.email);
+      String chatRoomID =
+          Utilities().getChatRoomID(searchedUser.email, currentUser.email);
 
       Map<String, Object> chatRoomMap = {
         'users': users,
