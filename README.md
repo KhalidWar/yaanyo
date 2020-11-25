@@ -32,7 +32,7 @@ Real time chat and shopping checklist made with flutter utilizing Firebase and C
 
 
 ## Cloud Firestore Data Structure
-<img src="readme_assets/chatRooms.png"> <img src="readme_assets/chats.png"> <img src="readme_assets/shoppingGrid.png"> <img src="readme_assets/shoppingTask.png">
+<img src="readme_assets/chatRooms.png"> <img src="readme_assets/chats.png"> <img src="readme_assets/shopping.png"> <img src="readme_assets/shoppingGrid.png"> <img src="readme_assets/shoppingTask.png">
 
 
 ## Installation
