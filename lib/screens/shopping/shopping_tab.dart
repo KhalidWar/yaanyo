@@ -2,14 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
-import 'package:yaanyo/screens/shopping_task_screen.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/service_locator.dart';
+import 'package:yaanyo/screens/shopping/shopping_task_screen.dart';
+import 'package:yaanyo/services/database/shopping_database_service.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
 import '../../constants.dart';
-import '../create_new_grid_box.dart';
+import 'create_new_grid_box.dart';
 
 class ShoppingTab extends StatefulWidget {
   static const String id = 'shopping_screen';
@@ -24,7 +23,7 @@ class _ShoppingTabState extends State<ShoppingTab> {
   @override
   void initState() {
     super.initState();
-    shoppingStream = serviceLocator<DatabaseService>().getShoppingGridStream();
+    shoppingStream = ShoppingDatabaseService().getShoppingGridStream();
   }
 
   @override

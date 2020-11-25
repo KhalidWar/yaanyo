@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/models/message.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/service_locator.dart';
+import 'package:yaanyo/services/database/chat_database_service.dart';
 import 'package:yaanyo/widgets/message_tile.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
@@ -23,7 +22,7 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  final _databaseService = serviceLocator<DatabaseService>();
+  final _chatDatabaseService = ChatDatabaseService();
   final currentUserEmail = FirebaseAuth.instance.currentUser.email;
 
   final TextEditingController _messageInputController = TextEditingController();
@@ -36,7 +35,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           message: _messageInputController.text,
           time: Timestamp.now(),
           sender: currentUserEmail);
-      await _databaseService.addMessage(widget.chatRoomID, message);
+      await _chatDatabaseService.addMessage(widget.chatRoomID, message);
       _messageInputController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -51,7 +50,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
-    _chatMessageStream = _databaseService.getChatMessages(widget.chatRoomID);
+    _chatMessageStream =
+        _chatDatabaseService.getChatMessages(widget.chatRoomID);
   }
 
   @override

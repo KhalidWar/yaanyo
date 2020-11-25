@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+const kDefaultProfilePic =
+    'https://images.unsplash.com/photo-1544502062-f82887f03d1c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1427&q=80';
+
 const kTextFormInputDecoration = InputDecoration(
   border: OutlineInputBorder(),
   focusedBorder:

@@ -2,13 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/service_locator.dart';
+import 'package:yaanyo/services/database/chat_database_service.dart';
 import 'package:yaanyo/widgets/chat_list_tile.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
-import '../chat_room_screen.dart';
-import '../start_new_chat_screen.dart';
+import 'chat_room_screen.dart';
+import 'start_new_chat_screen.dart';
 
 class ChatTab extends StatefulWidget {
   const ChatTab({Key key}) : super(key: key);
@@ -18,6 +17,7 @@ class ChatTab extends StatefulWidget {
 }
 
 class _ChatTabState extends State<ChatTab> {
+  final _chatDBService = ChatDatabaseService();
   Stream<QuerySnapshot> _chatStream;
 
   String lastMessage;
@@ -25,7 +25,7 @@ class _ChatTabState extends State<ChatTab> {
   @override
   void initState() {
     super.initState();
-    _chatStream = serviceLocator<DatabaseService>().getChatRooms();
+    _chatStream = _chatDBService.getChatRooms();
   }
 
   @override
@@ -71,7 +71,7 @@ class _ChatTabState extends State<ChatTab> {
                       profilePic = data['users'][1]['profilePic'];
                     }
 
-                    serviceLocator<DatabaseService>()
+                    _chatDBService
                         .getLastMessage(data['chatRoomID'])
                         .then((value) {
                       lastMessage = value;

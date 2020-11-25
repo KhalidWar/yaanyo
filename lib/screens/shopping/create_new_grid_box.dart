@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yaanyo/models/shopping_grid.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/service_locator.dart';
+import 'package:yaanyo/services/database/shopping_database_service.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
 class CreateNewGridBox extends StatefulWidget {
   @override
@@ -31,7 +30,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
         time: Timestamp.now(),
         gridColorInt: gridColorList.indexOf(_mainColor),
       );
-      serviceLocator<DatabaseService>()
+      ShoppingDatabaseService()
           .createNewShoppingGrid(shoppingGrid: shoppingGrid);
       Navigator.pop(context);
     }

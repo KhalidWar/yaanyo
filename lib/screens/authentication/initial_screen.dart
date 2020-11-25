@@ -5,7 +5,7 @@ import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/services/auth_service.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
-import 'home_screen.dart';
+import '../home_screen.dart';
 
 class InitialScreen extends ConsumerWidget {
   @override

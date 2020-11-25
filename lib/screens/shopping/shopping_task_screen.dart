@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/models/shopping_task.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/service_locator.dart';
+import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
+import 'package:yaanyo/services/database/shopping_database_service.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
-
-import 'authentication/sign_in_screen.dart';
 
 class ShoppingTaskScreen extends StatefulWidget {
   const ShoppingTaskScreen({
@@ -25,6 +23,7 @@ class ShoppingTaskScreen extends StatefulWidget {
 class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
   final _taskInputController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _shoppingDBService = ShoppingDatabaseService();
 
   Stream<QuerySnapshot> shoppingTaskStream;
 
@@ -36,7 +35,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
         time: Timestamp.now(),
       );
 
-      serviceLocator<DatabaseService>().addShoppingTask(
+      _shoppingDBService.addShoppingTask(
         storeName: widget.storeName,
         shoppingTask: shoppingTask,
       );
@@ -48,7 +47,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
     final ShoppingTask shoppingTask = ShoppingTask(
         isDone: toggle, taskLabel: taskLabel, time: Timestamp.now());
 
-    serviceLocator<DatabaseService>().toggleShoppingTask(
+    _shoppingDBService.toggleShoppingTask(
       storeName: widget.storeName,
       shoppingTask: shoppingTask,
     );
@@ -57,8 +56,8 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
   @override
   void initState() {
     super.initState();
-    shoppingTaskStream = serviceLocator<DatabaseService>()
-        .getShoppingTaskStream(widget.storeName);
+    shoppingTaskStream =
+        _shoppingDBService.getShoppingTaskStream(widget.storeName);
   }
 
   @override

@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yaanyo/services/database_service.dart';
-import 'package:yaanyo/services/service_locator.dart';
+import 'package:yaanyo/services/database/user_database_service.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
 import '../../constants.dart';
@@ -16,6 +15,7 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
+  final _userDService = UserDatabaseService();
   final TextEditingController _textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -25,7 +25,7 @@ class _ProfileTabState extends State<ProfileTab> {
 
   Future _updateName() async {
     if (_formKey.currentState.validate()) {
-      final userData = await serviceLocator<DatabaseService>()
+      final userData = await _userDService
           .updateUserName(_textEditingController.text.trim());
       if (userData == null) {
         setState(() {
@@ -41,8 +41,7 @@ class _ProfileTabState extends State<ProfileTab> {
   @override
   void initState() {
     super.initState();
-    currentUserStream =
-        serviceLocator<DatabaseService>().getCurrentUserStream();
+    currentUserStream = _userDService.getCurrentUserStream();
   }
 
   @override
