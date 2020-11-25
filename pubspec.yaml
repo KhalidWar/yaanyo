@@ -13,10 +13,10 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.1+1
-  firebase_core: ^0.5.2
-  firebase_auth: ^0.18.3
+  firebase_core: ^0.5.2+1
+  firebase_auth: ^0.18.3+1
   flutter_svg: ^0.19.2+1
-  cloud_firestore: ^0.14.3
+  cloud_firestore: ^0.14.3+1
   shared_preferences: ^0.5.12+4
   font_awesome_flutter: ^8.10.0
   get_it: ^5.0.1
