@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:yaanyo/screens/initial_screen.dart';
 import 'package:yaanyo/services/auth_service.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -20,9 +19,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: FlatButton(
             onPressed: () async {
               await _authService.signOut();
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return InitialScreen();
-              }));
+              Navigator.pop(context);
             },
             child: Text(
               'Sign Out',
