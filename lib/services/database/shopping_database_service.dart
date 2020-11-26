@@ -50,7 +50,7 @@ class ShoppingDatabaseService extends ChangeNotifier {
         .collection('shoppingGrid')
         .doc(storeName)
         .collection('shoppingTask')
-        .orderBy('time', descending: false)
+        .orderBy('time', descending: true)
         .snapshots();
   }
 
@@ -64,5 +64,14 @@ class ShoppingDatabaseService extends ChangeNotifier {
         .collection('shoppingTask')
         .doc(shoppingTask.taskLabel)
         .update(shoppingTask.toJson());
+  }
+
+  Future deleteShoppingGrid({String storeName}) async {
+    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
+    _shoppingCollection
+        .doc(currentUserUID)
+        .collection('shoppingGrid')
+        .doc(storeName)
+        .delete();
   }
 }

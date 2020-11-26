@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndexStack = 0;
+  int _selectedIndexStack = 1;
   String currentUserEmail;
   String currentUserName;
 

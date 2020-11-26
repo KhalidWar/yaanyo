@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:yaanyo/models/shopping_task.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
@@ -51,6 +52,11 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
       storeName: widget.storeName,
       shoppingTask: shoppingTask,
     );
+  }
+
+  void _deleteShoppingGrid() {
+    _shoppingDBService.deleteShoppingGrid(storeName: widget.storeName);
+    Navigator.pop(context);
   }
 
   @override
@@ -124,7 +130,14 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                                 ),
                                 Text(
                                   data['taskLabel'],
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .copyWith(
+                                        decoration: data['isDone']
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
                                 ),
                               ],
                             );
@@ -184,7 +197,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
       actions: [
         PopupMenuButton<String>(
           itemBuilder: (BuildContext context) {
-            return {''}.map((String choice) {
+            return {'Delete ${widget.storeName} Grid'}.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
                 child: Text(choice),
@@ -192,7 +205,28 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
             }).toList();
           },
           onSelected: (value) {
-            // Navigator.pop(context);
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: Text(
+                      'Are you sure to delete this grid and all its tasks (done and undone)?'),
+                  actions: [
+                    FlatButton(
+                      child: Text('Yes'),
+                      onPressed: () {
+                        _deleteShoppingGrid();
+                        Navigator.pop(context);
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('No'),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                );
+              },
+            );
           },
         ),
       ],
