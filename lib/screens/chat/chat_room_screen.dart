@@ -13,9 +13,11 @@ class ChatRoomScreen extends StatefulWidget {
     this.profilePic,
     this.chatRoomID,
     this.email,
+    this.index,
   }) : super(key: key);
 
   final String name, email, profilePic, chatRoomID;
+  final int index;
 
   @override
   _ChatRoomScreenState createState() => _ChatRoomScreenState();
@@ -107,7 +109,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             decoration: BoxDecoration(
               color: Colors.grey[200],
               border: Border.all(color: Colors.blue),
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Row(
               children: <Widget>[
@@ -151,7 +153,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         contentPadding: EdgeInsets.all(0),
         selected: false,
         leading: Hero(
-            tag: widget.name,
+            tag: widget.index,
             child:
                 CircleAvatar(backgroundImage: NetworkImage(widget.profilePic))),
         title: Text(widget.name, style: Theme.of(context).textTheme.headline6),

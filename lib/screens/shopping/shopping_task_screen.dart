@@ -155,7 +155,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
               decoration: BoxDecoration(
                 color: widget.gridColor,
                 border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(15),
               ),
               child: Row(
                 children: <Widget>[
@@ -209,8 +209,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  content: Text(
-                      'Are you sure to delete this grid and all its tasks (done and undone)?'),
+                  content: Text('Delete this grid and all of its tasks?'),
                   actions: [
                     FlatButton(
                       child: Text('Yes'),

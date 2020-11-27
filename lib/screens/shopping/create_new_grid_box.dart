@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
   }
 
   void _gridIconPicker() {
-    showDialog(
+    showModal(
         context: context,
         builder: (context) {
           Size size = MediaQuery.of(context).size;
@@ -69,7 +70,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
   }
 
   void _gridColorPicker() {
-    showDialog(
+    showModal(
       context: context,
       builder: (_) {
         return AlertDialog(

@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class _ProfileTabState extends State<ProfileTab> {
                         title: Text('${data['name']}',
                             style: Theme.of(context).textTheme.bodyText1),
                         subtitle: Text('Tap to change your name'),
-                        onTap: () => showDialog(
+                        onTap: () => showModal(
                             context: context,
                             builder: (context) {
                               return buildAlertDialog(data, context);

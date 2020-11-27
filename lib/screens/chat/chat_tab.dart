@@ -81,6 +81,7 @@ class _ChatTabState extends State<ChatTab> {
                       userName: name,
                       profilePic: profilePic,
                       lastMessage: lastMessage ?? '...',
+                      index: index,
                       onPress: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -89,6 +90,7 @@ class _ChatTabState extends State<ChatTab> {
                                   email: email,
                                   profilePic: profilePic,
                                   chatRoomID: data['chatRoomID'],
+                                  index: index,
                                 )),
                       ),
                     );

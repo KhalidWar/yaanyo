@@ -8,17 +8,19 @@ class ChatListTile extends StatelessWidget {
     this.lastMessage,
     this.profilePic,
     this.onPress,
+    this.index,
   }) : super(key: key);
 
   final String userName, profilePic, lastMessage;
   final Function onPress;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onPress,
       leading: Hero(
-        tag: userName,
+        tag: index,
         child: CircleAvatar(
           radius: 28,
           backgroundImage: NetworkImage(profilePic),

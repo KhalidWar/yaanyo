@@ -32,6 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       } else {
         serviceLocator<AuthService>()
             .signInWithEmailAndPassword(_email, _password);
+        Navigator.pop(context);
       }
     }
   }
@@ -95,6 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ? 'Password must be 6+ characters long'
                           : null,
                       textInputAction: TextInputAction.go,
+                      onFieldSubmitted: (value) => _signUp(),
                       decoration: kTextFormInputDecoration.copyWith(
                           hintText: 'Password'),
                       onChanged: (input) {

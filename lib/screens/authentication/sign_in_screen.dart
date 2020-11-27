@@ -76,6 +76,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ? 'Password must be 6+ characters long'
                       : null,
                   textInputAction: TextInputAction.go,
+                  onFieldSubmitted: (value) => _signIn(),
                   decoration:
                       kTextFormInputDecoration.copyWith(hintText: 'Password'),
                   onChanged: (input) {
