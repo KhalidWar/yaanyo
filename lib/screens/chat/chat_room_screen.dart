@@ -153,7 +153,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         contentPadding: EdgeInsets.all(0),
         selected: false,
         leading: Hero(
-            tag: widget.index,
+            tag: widget.index ?? 0,
             child:
                 CircleAvatar(backgroundImage: NetworkImage(widget.profilePic))),
         title: Text(widget.name, style: Theme.of(context).textTheme.headline6),

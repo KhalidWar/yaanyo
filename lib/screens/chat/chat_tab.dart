@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
 import 'package:yaanyo/widgets/chat_list_tile.dart';
+import 'package:yaanyo/widgets/fab_open_container.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
 import 'chat_room_screen.dart';
@@ -31,7 +32,10 @@ class _ChatTabState extends State<ChatTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: buildFloatingActionButton(),
+      floatingActionButton: FABOpenContainer(
+          heroTag: 'chatTab',
+          iconData: Icons.chat,
+          child: StartNewChatScreen()),
       body: StreamBuilder(
         stream: _chatStream,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -110,20 +114,6 @@ class _ChatTabState extends State<ChatTab> {
           }
         },
       ),
-    );
-  }
-
-  FloatingActionButton buildFloatingActionButton() {
-    return FloatingActionButton(
-      heroTag: 'FAB2',
-      child: Icon(Icons.chat),
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return StartNewChatScreen();
-          },
-        ));
-      },
     );
   }
 }

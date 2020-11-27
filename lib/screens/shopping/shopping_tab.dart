@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/screens/shopping/shopping_task_screen.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
+import 'package:yaanyo/widgets/fab_open_container.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
@@ -29,7 +30,10 @@ class _ShoppingTabState extends State<ShoppingTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: buildFloatingActionButton(),
+      floatingActionButton: FABOpenContainer(
+          heroTag: 'shoppingTab',
+          iconData: Icons.add,
+          child: CreateNewGridBox()),
       body: StreamBuilder(
         stream: shoppingStream,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -94,18 +98,6 @@ class _ShoppingTabState extends State<ShoppingTab> {
           return Center(child: CircularProgressIndicator());
         },
       ),
-    );
-  }
-
-  FloatingActionButton buildFloatingActionButton() {
-    return FloatingActionButton(
-      heroTag: 'FAB1',
-      child: Icon(Icons.add),
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return CreateNewGridBox();
-        }));
-      },
     );
   }
 }
