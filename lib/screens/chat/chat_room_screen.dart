@@ -150,7 +150,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       title: ListTile(
         contentPadding: EdgeInsets.all(0),
         selected: false,
-        leading: CircleAvatar(backgroundImage: NetworkImage(widget.profilePic)),
+        leading: Hero(
+            tag: widget.name,
+            child:
+                CircleAvatar(backgroundImage: NetworkImage(widget.profilePic))),
         title: Text(widget.name, style: Theme.of(context).textTheme.headline6),
         subtitle: Text(widget.email),
       ),

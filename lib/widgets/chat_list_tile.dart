@@ -15,33 +15,30 @@ class ChatListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: ListTile(
-            onTap: onPress,
-            leading: CircleAvatar(
-              radius: 28,
-              backgroundImage: NetworkImage(profilePic),
-            ),
-            title: Text(
-              userName,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            subtitle: Text(
-              lastMessage,
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Icon(Icons.done_all),
-              ],
-            ),
-          ),
+    return ListTile(
+      onTap: onPress,
+      leading: Hero(
+        tag: userName,
+        child: CircleAvatar(
+          radius: 28,
+          backgroundImage: NetworkImage(profilePic),
         ),
-      ],
+      ),
+      title: Text(
+        userName,
+        style: Theme.of(context).textTheme.headline6,
+      ),
+      subtitle: Text(
+        lastMessage,
+        style: Theme.of(context).textTheme.bodyText2,
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Icon(Icons.done_all),
+        ],
+      ),
     );
   }
 }
