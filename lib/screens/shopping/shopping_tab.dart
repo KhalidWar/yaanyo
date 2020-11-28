@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,21 +74,22 @@ class _ShoppingTabState extends State<ShoppingTab> {
                   ),
                   itemBuilder: (context, index) {
                     final data = snapshot.data.docs[index].data();
-                    return GridBox(
-                      storeName: data['storeName'],
-                      storeIcon: data['storeIcon'],
-                      gridColor: gridColorList[data['gridColorInt']],
-                      onPress: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ShoppingTaskScreen(
-                                storeName: data['storeName'],
-                                gridColor: gridColorList[data['gridColorInt']],
-                              );
-                            },
-                          ),
+                    return OpenContainer(
+                      closedElevation: 5,
+                      closedColor: gridColorList[data['gridColorInt']],
+                      closedShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      closedBuilder: (context, closedWidget) {
+                        return GridBox(
+                          storeName: data['storeName'],
+                          storeIcon: data['storeIcon'],
+                        );
+                      },
+                      openBuilder: (context, openWidget) {
+                        return ShoppingTaskScreen(
+                          storeName: data['storeName'],
+                          gridColor: gridColorList[data['gridColorInt']],
                         );
                       },
                     );

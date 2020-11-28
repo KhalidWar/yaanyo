@@ -124,7 +124,6 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                     validator: (value) =>
                         value.isEmpty ? 'Field can not be empty' : null,
                     textInputAction: TextInputAction.next,
-                    autofocus: true,
                     textCapitalization: TextCapitalization.words,
                     decoration: kTextFormInputDecoration.copyWith(
                         hintText: 'Enter Grid Name'),
@@ -132,11 +131,14 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                 ),
                 SizedBox(height: size.height * 0.03),
                 Container(
-                  height: size.height * 0.3,
+                  height: size.height * 0.32,
                   width: size.width * 0.5,
+                  decoration: BoxDecoration(
+                    color: _mainColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: GridBox(
                     storeName: _textInputController.text.trim(),
-                    gridColor: _mainColor,
                     storeIcon: storeIconList[_selectedIndex],
                   ),
                 ),
