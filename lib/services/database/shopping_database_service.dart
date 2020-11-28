@@ -66,12 +66,30 @@ class ShoppingDatabaseService extends ChangeNotifier {
         .update(shoppingTask.toJson());
   }
 
-  Future deleteShoppingGrid({String storeName}) async {
+  Future deleteShoppingGrid(
+      {String storeName, List<String> gridTasksList}) async {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
+
+    /// deletes shoppingGrid document but does not delete its
+    /// subcollections (shoppingTasks)
+    /// https://firebase.google.com/docs/firestore/manage-data/delete-data
     _shoppingCollection
         .doc(currentUserUID)
         .collection('shoppingGrid')
         .doc(storeName)
-        .delete();
+        .delete()
+        .whenComplete(() {
+      /// loop in gridTask list to delete every entry otherwise re-creating a shoppingGrid
+      /// with same old name will show old gridTask items since they are exist
+      for (String task in gridTasksList) {
+        _shoppingCollection
+            .doc(currentUserUID)
+            .collection('shoppingGrid')
+            .doc(storeName)
+            .collection('shoppingTask')
+            .doc('$task')
+            .delete();
+      }
+    });
   }
 }

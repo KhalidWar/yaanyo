@@ -25,6 +25,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
   final _taskInputController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _shoppingDBService = ShoppingDatabaseService();
+  final _gridTasksList = <String>[];
 
   Stream<QuerySnapshot> shoppingTaskStream;
 
@@ -52,11 +53,6 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
       storeName: widget.storeName,
       shoppingTask: shoppingTask,
     );
-  }
-
-  void _deleteShoppingGrid() {
-    _shoppingDBService.deleteShoppingGrid(storeName: widget.storeName);
-    Navigator.pop(context);
   }
 
   @override
@@ -113,6 +109,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (BuildContext context, int index) {
                             final data = snapshot.data.docs[index].data();
+                            _gridTasksList.add(data['taskLabel']);
 
                             return Row(
                               children: <Widget>[
@@ -214,7 +211,10 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                     FlatButton(
                       child: Text('Yes'),
                       onPressed: () {
-                        _deleteShoppingGrid();
+                        _shoppingDBService.deleteShoppingGrid(
+                            storeName: widget.storeName,
+                            gridTasksList: _gridTasksList);
+                        Navigator.pop(context);
                         Navigator.pop(context);
                       },
                     ),
