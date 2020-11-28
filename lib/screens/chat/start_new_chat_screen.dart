@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yaanyo/constants.dart';
 import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/screens/chat/chat_room_screen.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
@@ -16,33 +17,31 @@ class StartNewChatScreen extends StatefulWidget {
   _StartNewChatScreenState createState() => _StartNewChatScreenState();
 }
 
+List<AppUser> _recentSearchList = [];
+
 class _StartNewChatScreenState extends State<StartNewChatScreen> {
   final _userDBService = UserDatabaseService();
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingController = TextEditingController();
 
   QuerySnapshot _searchSnapshot;
-  QuerySnapshot currentUserSnapshot;
+  QuerySnapshot _currentUserSnapshot;
   String _error = '';
 
-  void searchByEmailAddress() {
-    if (_textEditingController.text.isEmpty || _textEditingController == null) {
-      setState(() {
-        _error = 'Search field cannot be empty';
-      });
-    } else {
-      _userDBService.searchUserByEmail(_textEditingController.text).then(
+  void _searchByEmailAddress() {
+    if (_formKey.currentState.validate()) {
+      _userDBService.searchUserByEmail(_textEditingController.text.trim()).then(
         (value) {
-          setState(() {
-            _searchSnapshot = value;
-            _error = '';
-          });
+          _searchSnapshot = value;
+          _recentSearchList.add(AppUser.fromJson(value.docs[0].data()));
+          _error = '';
         },
       );
     }
   }
 
-  void createChatRoom({Map<String, dynamic> searchedUserData}) async {
-    final currentUser = AppUser.fromJson(currentUserSnapshot.docs[0].data());
+  void _createChatRoom({Map<String, dynamic> searchedUserData}) async {
+    final currentUser = AppUser.fromJson(_currentUserSnapshot.docs[0].data());
     final searchedUser = AppUser.fromJson(searchedUserData);
 
     if (searchedUser.email == currentUser.email) {
@@ -83,11 +82,7 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
     super.initState();
     _userDBService
         .searchUserByEmail(FirebaseAuth.instance.currentUser.email)
-        .then((value) {
-      setState(() {
-        currentUserSnapshot = value;
-      });
-    });
+        .then((value) => _currentUserSnapshot = value);
   }
 
   @override
@@ -96,55 +91,38 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Start New Chat')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              height: size.height * 0.08,
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              margin: EdgeInsets.symmetric(vertical: 5),
-              decoration: BoxDecoration(
-                  color: Colors.white54,
-                  border: Border.all(
-                    color: Colors.red,
-                  ),
-                  borderRadius: BorderRadius.circular(10)),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: _textEditingController,
-                      autofocus: true,
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (value) => searchByEmailAddress(),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Search by email address',
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      searchByEmailAddress();
-                    },
-                  ),
-                ],
+            Form(
+              key: _formKey,
+              child: TextFormField(
+                controller: _textEditingController,
+                textInputAction: TextInputAction.search,
+                onFieldSubmitted: (value) => _searchByEmailAddress(),
+                validator: (value) =>
+                    value.isEmpty ? 'Please provide an email' : null,
+                decoration: kTextFormInputDecoration.copyWith(
+                  hintText: 'Search by Email Address...',
+                ),
               ),
             ),
+            SizedBox(height: size.height * 0.02),
+            Text('Search Result', style: Theme.of(context).textTheme.headline6),
             _searchSnapshot == null
-                ? ErrorText(error: _error)
-                : Column(
-                    children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _searchSnapshot.docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final data = _searchSnapshot.docs[index].data();
-                          return GestureDetector(
-                            onTap: () => createChatRoom(searchedUserData: data),
+                ? Text('Start Searching')
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _searchSnapshot.docs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final data = _searchSnapshot.docs[index].data();
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () =>
+                                _createChatRoom(searchedUserData: data),
                             child: ListTile(
                               leading: CircleAvatar(
                                   backgroundImage:
@@ -153,11 +131,35 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
                               subtitle: Text(data['email']),
                               trailing: Icon(Icons.send),
                             ),
-                          );
-                        },
-                      ),
-                      ErrorText(error: _error)
-                    ],
+                          ),
+                          Center(child: ErrorText(error: _error)),
+                        ],
+                      );
+                    },
+                  ),
+            Divider(),
+            SizedBox(height: size.height * 0.02),
+            Text('Recently searched',
+                style: Theme.of(context).textTheme.headline6),
+            _recentSearchList.isEmpty
+                ? Text('No Recent Search')
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _recentSearchList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final data = _recentSearchList[index];
+                      return GestureDetector(
+                        onTap: () =>
+                            _createChatRoom(searchedUserData: data.toJson()),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                              backgroundImage: NetworkImage(data.profilePic)),
+                          title: Text(data.name),
+                          subtitle: Text(data.email),
+                          trailing: Icon(Icons.send),
+                        ),
+                      );
+                    },
                   ),
           ],
         ),
