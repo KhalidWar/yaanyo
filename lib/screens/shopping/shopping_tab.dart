@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/screens/shopping/shopping_task_screen.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
@@ -12,31 +12,18 @@ import 'package:yaanyo/widgets/warning_widget.dart';
 import '../../constants.dart';
 import 'create_new_grid_box.dart';
 
-class ShoppingTab extends StatefulWidget {
-  static const String id = 'shopping_screen';
-
+class ShoppingTab extends ConsumerWidget {
   @override
-  _ShoppingTabState createState() => _ShoppingTabState();
-}
-
-class _ShoppingTabState extends State<ShoppingTab> {
-  Stream<QuerySnapshot> shoppingStream;
-
-  @override
-  void initState() {
-    super.initState();
-    shoppingStream = ShoppingDatabaseService().getShoppingGridStream();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final shoppingGridStream =
+        watch(shoppingDatabaseServiceProvider).getShoppingGridStream();
     return Scaffold(
       floatingActionButton: FABOpenContainer(
           heroTag: 'shoppingTab',
           iconData: Icons.add,
           child: CreateNewGridBox()),
       body: StreamBuilder(
-        stream: shoppingStream,
+        stream: shoppingGridStream,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
