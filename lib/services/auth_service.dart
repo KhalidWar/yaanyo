@@ -15,15 +15,14 @@ class AuthService extends ChangeNotifier {
 
   Stream<User> userStream() => _firebaseAuth.authStateChanges();
 
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<String> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
-      UserCredential userCredential = await _firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: password);
-      User user = userCredential.user;
-      return user;
-    } catch (e) {
-      print(e.toString());
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
       return null;
+    } catch (e) {
+      return e.message;
     }
   }
 
