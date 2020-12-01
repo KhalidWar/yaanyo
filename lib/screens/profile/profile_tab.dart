@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/services/database/user_database_service.dart';
 import 'package:yaanyo/utilities/form_validator.dart';
-import 'package:yaanyo/widgets/warning_widget.dart';
+import 'package:yaanyo/widgets/alert_widget.dart';
 
 import '../../constants.dart';
 
@@ -54,12 +54,10 @@ class _ProfileTabState extends State<ProfileTab> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return WarningWidget(
-                iconData: Icons.warning_amber_rounded,
-                label:
-                    'No Internet Connection \n Please make sure you\'re online',
-                buttonLabel: 'Try again',
-                buttonOnPress: () {});
+            return AlertWidget(
+              label: kNoInternetConnection,
+              iconData: Icons.warning_amber_rounded,
+            );
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator());
           default:

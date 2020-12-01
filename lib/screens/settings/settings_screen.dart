@@ -1,8 +1,6 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/utilities/confirmation_dialog.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -23,37 +21,12 @@ class SettingsScreen extends StatelessWidget {
                 color: Colors.red,
                 child: Text('Log Out',
                     style: Theme.of(context).textTheme.headline6),
-                onPressed: () => buildShowModal(context),
+                onPressed: () => ConfirmationDialogs().signOut(context),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Future buildShowModal(context) {
-    return showModal(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text('Are you sure you want to sign out?'),
-          actions: [
-            FlatButton(
-              child: Text('Yes'),
-              onPressed: () {
-                context.read(authServiceProvider).signOut();
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-            FlatButton(
-              child: Text('No'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
     );
   }
 }

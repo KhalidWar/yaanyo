@@ -2,12 +2,12 @@ import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/screens/shopping/shopping_task_screen.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
+import 'package:yaanyo/utilities/confirmation_dialog.dart';
 import 'package:yaanyo/widgets/fab_open_container.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
-import 'package:yaanyo/widgets/warning_widget.dart';
+import 'package:yaanyo/widgets/alert_widget.dart';
 
 import '../../constants.dart';
 import 'create_new_grid_box.dart';
@@ -27,27 +27,24 @@ class ShoppingTab extends ConsumerWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return WarningWidget(
-                  iconData: Icons.warning_amber_rounded,
-                  label:
-                      'No Internet Connection \n Please make sure you\'re online',
-                  buttonLabel: 'Try again',
-                  buttonOnPress: () {});
+              return AlertWidget(
+                label: kNoInternetConnection,
+                iconData: Icons.warning_amber_rounded,
+              );
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.data.documents.isEmpty) {
-                return WarningWidget(
-                    iconData: Icons.hourglass_empty,
-                    label: 'Grid list is empty',
-                    buttonOnPress: () {});
+                return AlertWidget(
+                  label: kGridList,
+                  iconData: Icons.list_alt,
+                );
               } else if (snapshot.hasError) {
-                return WarningWidget(
+                return AlertWidget(
                   iconData: Icons.warning_amber_rounded,
-                  label: 'Something went wrong. \n Please sign in again!',
-                  buttonLabel: 'Sign in again',
-                  buttonOnPress: () => Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => SignInScreen())),
+                  label: 'Something went wrong\n${snapshot.error}',
+                  buttonLabel: 'Sign out',
+                  buttonOnPress: () => ConfirmationDialogs().signOut(context),
                 );
               } else if (snapshot.hasData) {
                 return GridView.builder(
@@ -63,7 +60,7 @@ class ShoppingTab extends ConsumerWidget {
                     final data = snapshot.data.docs[index].data();
                     return OpenContainer(
                       closedElevation: 5,
-                      closedColor: gridColorList[data['gridColorInt']],
+                      closedColor: kGridColorList[data['gridColorInt']],
                       closedShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -76,7 +73,7 @@ class ShoppingTab extends ConsumerWidget {
                       openBuilder: (context, openWidget) {
                         return ShoppingTaskScreen(
                           storeName: data['storeName'],
-                          gridColor: gridColorList[data['gridColorInt']],
+                          gridColor: kGridColorList[data['gridColorInt']],
                         );
                       },
                     );

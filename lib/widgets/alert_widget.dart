@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class WarningWidget extends StatelessWidget {
-  const WarningWidget({
+class AlertWidget extends StatelessWidget {
+  const AlertWidget({
     Key key,
     this.label,
     this.iconData,
     this.buttonLabel,
     this.buttonOnPress,
-    this.color,
+    this.iconColor,
     this.scaffoldColor,
   }) : super(key: key);
 
   final String label, buttonLabel;
   final IconData iconData;
   final Function buttonOnPress;
-  final Color color, scaffoldColor;
+  final Color iconColor, scaffoldColor;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,6 @@ class WarningWidget extends StatelessWidget {
           scaffoldColor == null ? Colors.transparent : scaffoldColor,
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
@@ -34,17 +33,16 @@ class WarningWidget extends StatelessWidget {
                       ? Container()
                       : Icon(
                           iconData,
-                          color: color,
+                          color: iconColor,
                           size: size.height * 0.1,
                         ),
                   SizedBox(height: size.height * 0.03),
                   Text(
                     label,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        .copyWith(fontWeight: FontWeight.normal),
+                    style: Theme.of(context).textTheme.headline6.copyWith(
+                          fontWeight: FontWeight.normal,
+                        ),
                   ),
                 ],
               ),
@@ -60,7 +58,7 @@ class WarningWidget extends StatelessWidget {
                       buttonLabel,
                       style: Theme.of(context).textTheme.headline6,
                     ),
-                    onPressed: buttonOnPress,
+                    onPressed: buttonLabel == null ? () {} : buttonOnPress,
                   ),
           ],
         ),

@@ -28,9 +28,9 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
     if (_formKey.currentState.validate()) {
       ShoppingGrid shoppingGrid = ShoppingGrid(
         storeName: _textInputController.text.trim(),
-        storeIcon: storeIconList[_selectedIndex],
+        storeIcon: kStoreIconList[_selectedIndex],
         time: Timestamp.now(),
-        gridColorInt: gridColorList.indexOf(_mainColor),
+        gridColorInt: kGridColorList.indexOf(_mainColor),
       );
       ShoppingDatabaseService()
           .createNewShoppingGrid(shoppingGrid: shoppingGrid);
@@ -49,7 +49,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
               height: size.height * 0.5,
               width: size.width * 08,
               child: ListView.builder(
-                itemCount: storeIconList.length,
+                itemCount: kStoreIconList.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
@@ -60,7 +60,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                     },
                     title: Container(
                       height: size.height * 0.08,
-                      child: SvgPicture.asset('${storeIconList[index]}'),
+                      child: SvgPicture.asset('${kStoreIconList[index]}'),
                     ),
                   );
                 },
@@ -140,7 +140,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                   ),
                   child: GridBox(
                     storeName: _textInputController.text.trim(),
-                    storeIcon: storeIconList[_selectedIndex],
+                    storeIcon: kStoreIconList[_selectedIndex],
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
@@ -166,7 +166,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                     backgroundColor: Colors.transparent,
                     radius: 25,
                     child: SvgPicture.asset(
-                      storeIconList[_selectedIndex],
+                      kStoreIconList[_selectedIndex],
                       width: 40,
                     ),
                   ),

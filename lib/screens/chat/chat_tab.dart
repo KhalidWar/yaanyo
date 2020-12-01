@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
+import 'package:yaanyo/utilities/confirmation_dialog.dart';
+import 'package:yaanyo/widgets/alert_widget.dart';
 import 'package:yaanyo/widgets/chat_list_tile.dart';
 import 'package:yaanyo/widgets/fab_open_container.dart';
-import 'package:yaanyo/widgets/warning_widget.dart';
 
+import '../../constants.dart';
 import 'chat_room_screen.dart';
 import 'start_new_chat_screen.dart';
 
@@ -21,7 +22,7 @@ class _ChatTabState extends State<ChatTab> {
   final _chatDBService = ChatDatabaseService();
   Stream<QuerySnapshot> _chatStream;
 
-  String lastMessage;
+  String _lastMessage;
 
   @override
   void initState() {
@@ -41,20 +42,18 @@ class _ChatTabState extends State<ChatTab> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return WarningWidget(
-                  iconData: Icons.warning_amber_rounded,
-                  label:
-                      'No Internet Connection \n Please make sure you\'re online',
-                  buttonLabel: 'Try again',
-                  buttonOnPress: () {});
+              return AlertWidget(
+                label: kNoInternetConnection,
+                iconData: Icons.warning_amber_rounded,
+              );
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.data.documents.isEmpty) {
-                return WarningWidget(
-                    iconData: Icons.hourglass_empty,
-                    label: 'Chat list is empty ',
-                    buttonOnPress: () {});
+                return AlertWidget(
+                  label: kChatList,
+                  iconData: Icons.chat_bubble_outline,
+                );
               } else if (snapshot.hasData) {
                 return ListView.builder(
                   shrinkWrap: true,
@@ -78,35 +77,37 @@ class _ChatTabState extends State<ChatTab> {
                     _chatDBService
                         .getLastMessage(data['chatRoomID'])
                         .then((value) {
-                      lastMessage = value;
+                      _lastMessage = value;
                     });
 
                     return ChatListTile(
                       userName: name,
                       profilePic: profilePic,
-                      lastMessage: lastMessage ?? '...',
+                      lastMessage: _lastMessage ?? '...',
                       index: index,
-                      onPress: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
                             builder: (context) => ChatRoomScreen(
-                                  name: name,
-                                  email: email,
-                                  profilePic: profilePic,
-                                  chatRoomID: data['chatRoomID'],
-                                  index: index,
-                                )),
-                      ),
+                              name: name,
+                              email: email,
+                              profilePic: profilePic,
+                              chatRoomID: data['chatRoomID'],
+                              index: index,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
                 );
               } else if (snapshot.hasError) {
-                return WarningWidget(
+                return AlertWidget(
                   iconData: Icons.warning_amber_rounded,
-                  label: 'Something went wrong. \n Please sign in again!',
-                  buttonLabel: 'Sign in again',
-                  buttonOnPress: () => Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => SignInScreen())),
+                  label: 'Something went wrong\n${snapshot.error}',
+                  buttonLabel: 'Sign out',
+                  buttonOnPress: () => ConfirmationDialogs().signOut(context),
                 );
               } else {
                 return Center(child: CircularProgressIndicator());

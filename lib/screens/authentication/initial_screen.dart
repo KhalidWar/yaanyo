@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/services/auth_service.dart';
-import 'package:yaanyo/widgets/warning_widget.dart';
+import 'package:yaanyo/widgets/alert_widget.dart';
 
+import '../../constants.dart';
 import '../home_screen.dart';
 
 class InitialScreen extends ConsumerWidget {
@@ -17,11 +18,10 @@ class InitialScreen extends ConsumerWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return WarningWidget(
-                label: 'No Internet Connection.\nMake sure you\'re online.',
-                buttonLabel: 'Reload',
-                buttonOnPress: () {});
-            break;
+            return AlertWidget(
+              label: kNoInternetConnection,
+              iconData: Icons.warning_amber_rounded,
+            );
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator());
           default:

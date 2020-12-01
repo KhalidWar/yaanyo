@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:yaanyo/models/shopping_task.dart';
-import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
-import 'package:yaanyo/widgets/warning_widget.dart';
+import 'package:yaanyo/utilities/confirmation_dialog.dart';
+import 'package:yaanyo/widgets/alert_widget.dart';
+
+import '../../constants.dart';
 
 class ShoppingTaskScreen extends StatefulWidget {
   const ShoppingTaskScreen({
@@ -78,30 +80,25 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
-                      return WarningWidget(
-                          iconData: Icons.warning_amber_rounded,
-                          label:
-                              'No Internet Connection \n Please make sure you\'re online',
-                          buttonLabel: 'Try again',
-                          buttonOnPress: () {});
+                      return AlertWidget(
+                        label: kNoInternetConnection,
+                        iconData: Icons.warning_amber_rounded,
+                      );
                     case ConnectionState.waiting:
                       return Center(child: CircularProgressIndicator());
                     default:
                       if (snapshot.data.docs.isEmpty) {
-                        return WarningWidget(
-                            iconData: Icons.hourglass_empty,
-                            label: 'No Tasks at hand ',
-                            buttonOnPress: () {});
+                        return AlertWidget(
+                          iconData: Icons.receipt_long,
+                          label: kTaskList,
+                        );
                       } else if (snapshot.hasError) {
-                        return WarningWidget(
+                        return AlertWidget(
                           iconData: Icons.warning_amber_rounded,
-                          label:
-                              'Something went wrong. \n Please sign in again!',
-                          buttonLabel: 'Sign in again',
-                          buttonOnPress: () => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignInScreen())),
+                          label: 'Something went wrong\n${snapshot.error}',
+                          buttonLabel: 'Sign out',
+                          buttonOnPress: () =>
+                              ConfirmationDialogs().signOut(context),
                         );
                       } else if (snapshot.hasData) {
                         return ListView.builder(

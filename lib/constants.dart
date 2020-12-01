@@ -3,20 +3,25 @@ import 'package:flutter/material.dart';
 const kDefaultProfilePic =
     'https://images.unsplash.com/photo-1544502062-f82887f03d1c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1427&q=80';
 
+const kNoInternetConnection = 'No Internet Connection';
+const kChatList = 'No Chat Found';
+const kGridList = 'No Check List Found';
+const kTaskList = 'No Tasks at hand';
+
 const kTextFormInputDecoration = InputDecoration(
   border: OutlineInputBorder(),
   focusedBorder:
       OutlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 2)),
 );
 
-const List<Color> gridColorList = [
+const List<Color> kGridColorList = [
   Colors.red,
   Colors.orange,
   Colors.lightGreen,
   Colors.blue,
 ];
 
-const List<String> storeIconList = [
+const List<String> kStoreIconList = [
   'assets/images/mcdonalds.svg',
   'assets/images/amazon.svg',
   'assets/images/apple.svg',

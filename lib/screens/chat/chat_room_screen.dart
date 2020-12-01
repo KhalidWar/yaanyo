@@ -3,8 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/models/message.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
+import 'package:yaanyo/utilities/confirmation_dialog.dart';
+import 'package:yaanyo/widgets/alert_widget.dart';
 import 'package:yaanyo/widgets/message_tile.dart';
-import 'package:yaanyo/widgets/warning_widget.dart';
+
+import '../../constants.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({
@@ -68,12 +71,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
-                    return WarningWidget(
-                        iconData: Icons.warning_amber_rounded,
-                        label:
-                            'No Internet Connection.\nPlease make sure you\'re online',
-                        buttonLabel: 'Try again',
-                        buttonOnPress: () {});
+                    return AlertWidget(
+                      label: kNoInternetConnection,
+                      iconData: Icons.warning_amber_rounded,
+                    );
                   case ConnectionState.waiting:
                     return Center(child: CircularProgressIndicator());
                   default:
@@ -92,11 +93,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             );
                           });
                     } else if (snapshot.hasError) {
-                      return WarningWidget(
-                          iconData: Icons.warning_amber_rounded,
-                          label: 'Something went wrong.\nPlease sign in again!',
-                          buttonLabel: 'Try again',
-                          buttonOnPress: () {});
+                      return AlertWidget(
+                        iconData: Icons.warning_amber_rounded,
+                        label: 'Something went wrong\n${snapshot.error}',
+                        buttonLabel: 'Sign out',
+                        buttonOnPress: () =>
+                            ConfirmationDialogs().signOut(context),
+                      );
                     } else {
                       return Center(child: CircularProgressIndicator());
                     }
