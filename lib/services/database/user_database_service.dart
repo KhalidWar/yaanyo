@@ -16,7 +16,7 @@ class UserDatabaseService extends ChangeNotifier {
     return await _usersCollection.doc(appUser.email).set(appUser.toJson());
   }
 
-  Future searchUserByEmail(String email) async {
+  Future<QuerySnapshot> searchUserByEmail(String email) async {
     return await _usersCollection.where('email', isEqualTo: email).get();
   }
 

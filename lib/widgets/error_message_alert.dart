@@ -17,7 +17,6 @@ class ErrorMessageAlert extends StatelessWidget {
       return Container();
     } else {
       return Container(
-        height: size.height * 0.08,
         width: double.infinity,
         color: Colors.amberAccent,
         padding: EdgeInsets.all(10),
