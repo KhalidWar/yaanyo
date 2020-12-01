@@ -11,7 +11,6 @@ final authServiceProvider =
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final _userDBService = UserDatabaseService();
 
   Stream<User> userStream() => _firebaseAuth.authStateChanges();
 
@@ -45,13 +44,5 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future signOut() async {
-    try {
-      await _firebaseAuth.signOut();
-      notifyListeners();
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
+  Future<void> signOut() async => await _firebaseAuth.signOut();
 }
