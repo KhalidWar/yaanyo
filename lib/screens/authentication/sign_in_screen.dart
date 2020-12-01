@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/screens/authentication/sign_up_screen.dart';
 import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/error_message_alert.dart';
 
 import '../../constants.dart';
@@ -68,8 +69,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       SizedBox(height: size.height * 0.04),
                       TextFormField(
                         //todo validate email format using RegExp
-                        validator: (value) =>
-                            value.isEmpty ? 'Email can not be empty' : null,
+                        validator: (input) =>
+                            FormValidator().authEmailField(input),
                         textInputAction: TextInputAction.next,
                         decoration: kTextFormInputDecoration.copyWith(
                             hintText: 'Email'),
@@ -80,9 +81,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       SizedBox(height: size.height * 0.01),
                       TextFormField(
                         obscureText: true,
-                        validator: (value) => value.length < 6
-                            ? 'Password must be 6+ characters long'
-                            : null,
+                        validator: (input) =>
+                            FormValidator().authPasswordField(input),
                         textInputAction: TextInputAction.go,
                         onFieldSubmitted: (value) => _signIn(),
                         decoration: kTextFormInputDecoration.copyWith(

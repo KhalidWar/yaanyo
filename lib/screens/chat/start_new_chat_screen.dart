@@ -8,6 +8,7 @@ import 'package:yaanyo/models/app_user.dart';
 import 'package:yaanyo/screens/chat/chat_room_screen.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
 import 'package:yaanyo/services/database/user_database_service.dart';
+import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/utilities/utilities.dart';
 import 'package:yaanyo/widgets/error_message_alert.dart';
 
@@ -117,8 +118,8 @@ class _StartNewChatScreenState extends State<StartNewChatScreen> {
                       controller: _textEditingController,
                       textInputAction: TextInputAction.search,
                       onFieldSubmitted: (value) => _searchByEmailAddress(),
-                      validator: (value) =>
-                          value.isEmpty ? 'Please provide an email' : null,
+                      validator: (input) =>
+                          FormValidator().searchByEmail(input),
                       decoration: kTextFormInputDecoration.copyWith(
                         hintText: 'Search by Email Address...',
                       ),

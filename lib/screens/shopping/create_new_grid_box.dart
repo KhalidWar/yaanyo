@@ -6,6 +6,7 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yaanyo/models/shopping_grid.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
+import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 
 import '../../constants.dart';
@@ -121,8 +122,8 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                   key: _formKey,
                   child: TextFormField(
                     controller: _textInputController,
-                    validator: (value) =>
-                        value.isEmpty ? 'Field can not be empty' : null,
+                    validator: (input) =>
+                        FormValidator().createNewGridBox(input),
                     textInputAction: TextInputAction.next,
                     textCapitalization: TextCapitalization.words,
                     decoration: kTextFormInputDecoration.copyWith(

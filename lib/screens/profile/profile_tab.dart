@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yaanyo/services/database/user_database_service.dart';
+import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/warning_widget.dart';
 
 import '../../constants.dart';
@@ -157,8 +158,7 @@ class _ProfileTabState extends State<ProfileTab> {
             key: _formKey,
             child: TextFormField(
               controller: _textEditingController,
-              validator: (value) =>
-                  value.isEmpty ? 'Name can not be empty' : null,
+              validator: (input) => FormValidator().updateNameField(input),
               autofocus: true,
               textCapitalization: TextCapitalization.words,
               decoration: kTextFormInputDecoration.copyWith(
