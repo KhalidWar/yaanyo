@@ -26,22 +26,22 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<User> signUpWithEmailAndPassword(
+  Future<String> signUpWithEmailAndPassword(
       {String email, String password, String name}) async {
     try {
-      UserCredential userCredential = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
-      User user = userCredential.user;
-      final appUser = AppUser(
-          name: name,
-          email: email,
-          uid: user.uid,
-          profilePic: kDefaultProfilePic);
-      await _userDBService.addUserToDatabase(appUser: appUser);
-      return user;
-    } catch (e) {
-      print(e.toString());
+      await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
+        final appUser = AppUser(
+            name: name,
+            email: email,
+            uid: value.user.uid,
+            profilePic: kDefaultProfilePic);
+        await UserDatabaseService().addUserToDatabase(appUser: appUser);
+      });
       return null;
+    } catch (e) {
+      return e.message;
     }
   }
 

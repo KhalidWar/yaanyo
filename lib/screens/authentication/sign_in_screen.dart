@@ -15,11 +15,11 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  String _email, _password;
-  String _error;
+  String _email, _password, _error;
   bool _isLoading = false;
 
-  Future _signIn() async {
+  void _signIn() {
+    setState(() => _error = null);
     if (_formKey.currentState.validate()) {
       setState(() {
         _isLoading = true;
