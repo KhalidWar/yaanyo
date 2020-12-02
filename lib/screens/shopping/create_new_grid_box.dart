@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yaanyo/models/shopping_grid.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
@@ -12,6 +13,12 @@ import 'package:yaanyo/widgets/grid_box.dart';
 import '../../constants.dart';
 
 class CreateNewGridBox extends StatefulWidget {
+  const CreateNewGridBox({this.storeName, this.gridColor, this.storeIcon});
+
+  final Color gridColor;
+  final String storeName;
+  final String storeIcon;
+
   @override
   _CreateNewGridBoxState createState() => _CreateNewGridBoxState();
 }
@@ -20,22 +27,72 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
   final _textInputController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  ColorSwatch _mainColor = Colors.blue;
-  ColorSwatch _tempMainColor;
-  int _selectedIndex = 0;
+  ColorSwatch _mainColor;
+  int _selectedIndex;
 
   void _createNewGridBox() {
     if (_formKey.currentState.validate()) {
       ShoppingGrid shoppingGrid = ShoppingGrid(
         storeName: _textInputController.text.trim(),
-        storeIcon: kStoreIconList[_selectedIndex],
+        storeIcon: kStoreIconList[_selectedIndex ?? 0],
         time: Timestamp.now(),
-        gridColorInt: kGridColorList.indexOf(_mainColor),
+        gridColorInt: kGridColorList.indexOf(_mainColor ?? Colors.red),
       );
-      ShoppingDatabaseService()
+      context
+          .read(shoppingDatabaseServiceProvider)
           .createNewShoppingGrid(shoppingGrid: shoppingGrid);
       Navigator.pop(context);
     }
+  }
+
+  void _updateGridBox() {
+    ShoppingGrid shoppingGrid = ShoppingGrid(
+      storeName: _textInputController.text.trim().isEmpty
+          ? widget.storeName
+          : _textInputController.text.trim(),
+      storeIcon: _selectedIndex == null
+          ? widget.storeIcon
+          : kStoreIconList[_selectedIndex],
+      gridColorInt: _mainColor == null
+          ? kGridColorList.indexOf(widget.gridColor)
+          : kGridColorList.indexOf(_mainColor),
+    );
+    context.read(shoppingDatabaseServiceProvider).updateShoppingGrid(
+          storeName: widget.storeName,
+          shoppingGrid: shoppingGrid,
+        );
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  void _gridColorPicker() {
+    showModal(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(6.0),
+          title: Text("Grid Color picker"),
+          content: MaterialColorPicker(
+            shrinkWrap: true,
+            colors: [
+              Colors.red,
+              Colors.orange,
+              Colors.lightGreen,
+              Colors.blue,
+            ],
+            selectedColor: _mainColor ?? widget.gridColor,
+            allowShades: false,
+            onMainColorChange: (color) {
+              setState(() {
+                _mainColor = color;
+                print(_mainColor);
+              });
+              Navigator.pop(context);
+            },
+          ),
+        );
+      },
+    );
   }
 
   void _gridIconPicker() {
@@ -70,42 +127,6 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
         });
   }
 
-  void _gridColorPicker() {
-    showModal(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          contentPadding: const EdgeInsets.all(6.0),
-          title: Text("Grid Color picker"),
-          content: MaterialColorPicker(
-            shrinkWrap: true,
-            colors: [
-              Colors.red,
-              Colors.orange,
-              Colors.lightGreen,
-              Colors.blue,
-            ],
-            selectedColor: _mainColor,
-            allowShades: false,
-            onMainColorChange: (color) =>
-                setState(() => _tempMainColor = color),
-          ),
-          actions: [
-            FlatButton(
-                child: Text('CANCEL'), onPressed: Navigator.of(context).pop),
-            FlatButton(
-              child: Text('SUBMIT'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() => _mainColor = _tempMainColor);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -127,7 +148,10 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                     textInputAction: TextInputAction.next,
                     textCapitalization: TextCapitalization.words,
                     decoration: kTextFormInputDecoration.copyWith(
-                        hintText: 'Enter Grid Name'),
+                      hintText: widget.storeName == null
+                          ? 'Enter Grid Name'
+                          : widget.storeName,
+                    ),
                   ),
                 ),
                 SizedBox(height: size.height * 0.03),
@@ -135,12 +159,18 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                   height: size.height * 0.32,
                   width: size.width * 0.5,
                   decoration: BoxDecoration(
-                    color: _mainColor,
+                    color: widget.gridColor == null
+                        ? _mainColor ?? kGridColorList[0]
+                        : widget.gridColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: GridBox(
-                    storeName: _textInputController.text.trim(),
-                    storeIcon: kStoreIconList[_selectedIndex],
+                    storeName: widget.storeName == null
+                        ? _textInputController.text.trim()
+                        : widget.storeName,
+                    storeIcon: widget.storeIcon == null
+                        ? kStoreIconList[_selectedIndex ?? 0]
+                        : widget.storeIcon,
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
@@ -151,7 +181,9 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                     style: Theme.of(context).textTheme.headline5,
                   ),
                   trailing: CircleAvatar(
-                    backgroundColor: _mainColor,
+                    backgroundColor: widget.gridColor == null
+                        ? _mainColor ?? kGridColorList[0]
+                        : widget.gridColor,
                     radius: 25,
                   ),
                 ),
@@ -166,7 +198,9 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
                     backgroundColor: Colors.transparent,
                     radius: 25,
                     child: SvgPicture.asset(
-                      kStoreIconList[_selectedIndex],
+                      widget.storeIcon == null
+                          ? kStoreIconList[_selectedIndex ?? 0]
+                          : widget.storeIcon,
                       width: 40,
                     ),
                   ),
@@ -185,7 +219,8 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
       actions: [
         IconButton(
           icon: Icon(Icons.done, color: Colors.white),
-          onPressed: () => _createNewGridBox(),
+          onPressed: () =>
+              widget.storeName == null ? _createNewGridBox() : _updateGridBox(),
         ),
       ],
     );

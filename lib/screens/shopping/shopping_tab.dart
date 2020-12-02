@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/screens/shopping/shopping_task_screen.dart';
 import 'package:yaanyo/services/database/shopping_database_service.dart';
 import 'package:yaanyo/utilities/confirmation_dialog.dart';
+import 'package:yaanyo/widgets/alert_widget.dart';
 import 'package:yaanyo/widgets/fab_open_container.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
-import 'package:yaanyo/widgets/alert_widget.dart';
 
 import '../../constants.dart';
 import 'create_new_grid_box.dart';
@@ -74,6 +74,7 @@ class ShoppingTab extends ConsumerWidget {
                         return ShoppingTaskScreen(
                           storeName: data['storeName'],
                           gridColor: kGridColorList[data['gridColorInt']],
+                          storeIcon: data['storeIcon'],
                         );
                       },
                     );

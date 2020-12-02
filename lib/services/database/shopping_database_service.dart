@@ -14,7 +14,7 @@ class ShoppingDatabaseService extends ChangeNotifier {
   final CollectionReference _shoppingCollection =
       FirebaseFirestore.instance.collection('shopping');
 
-  Future createNewShoppingGrid({ShoppingGrid shoppingGrid}) async {
+  Future<void> createNewShoppingGrid({ShoppingGrid shoppingGrid}) async {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     _shoppingCollection
         .doc(currentUserUID)
@@ -32,7 +32,8 @@ class ShoppingDatabaseService extends ChangeNotifier {
         .snapshots();
   }
 
-  Future addShoppingTask({String storeName, ShoppingTask shoppingTask}) async {
+  Future<void> addShoppingTask(
+      {String storeName, ShoppingTask shoppingTask}) async {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     _shoppingCollection
         .doc(currentUserUID)
@@ -54,7 +55,7 @@ class ShoppingDatabaseService extends ChangeNotifier {
         .snapshots();
   }
 
-  Future toggleShoppingTask(
+  Future<void> toggleShoppingTask(
       {ShoppingTask shoppingTask, String storeName}) async {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
     return await _shoppingCollection
@@ -66,7 +67,7 @@ class ShoppingDatabaseService extends ChangeNotifier {
         .update(shoppingTask.toJson());
   }
 
-  Future deleteShoppingGrid(
+  Future<void> deleteShoppingGrid(
       {String storeName, List<String> gridTasksList}) async {
     final currentUserUID = FirebaseAuth.instance.currentUser.uid;
 
@@ -91,5 +92,50 @@ class ShoppingDatabaseService extends ChangeNotifier {
             .delete();
       }
     });
+  }
+
+  Future<void> updateShoppingGrid(
+      {String storeName, ShoppingGrid shoppingGrid}) async {
+    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
+    final _shoppingGridCollection = FirebaseFirestore.instance
+        .collection('shopping')
+        .doc(currentUserUID)
+        .collection('shoppingGrid');
+
+    await _shoppingGridCollection.doc(storeName).get().then((doc) {
+      Map<String, dynamic> newData = {};
+      if (doc.exists) {
+        newData
+          ..addAll(doc.data())
+          ..update('storeName', (value) => shoppingGrid.storeName);
+        _shoppingGridCollection.doc(shoppingGrid.storeName).set(newData);
+      }
+    });
+
+    await _shoppingGridCollection
+        .doc(storeName)
+        .collection('shoppingTask')
+        .get()
+        .then((value) {
+      for (var task in value.docs) {
+        final shoppingTask = ShoppingTask(
+            taskLabel: task['taskLabel'],
+            isDone: task['isDone'],
+            time: task['time']);
+        _shoppingGridCollection
+            .doc(shoppingGrid.storeName)
+            .collection('shoppingTask')
+            .doc(shoppingTask.taskLabel)
+            .set(shoppingTask.toJson())
+            .whenComplete(() {
+          _shoppingGridCollection
+              .doc(storeName)
+              .collection('shoppingTask')
+              .doc('${task['taskLabel']}')
+              .delete();
+        });
+      }
+    });
+    _shoppingGridCollection.doc(storeName).delete();
   }
 }
