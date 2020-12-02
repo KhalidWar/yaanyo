@@ -35,10 +35,7 @@ class ShoppingTab extends ConsumerWidget {
               return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.data.documents.isEmpty) {
-                return AlertWidget(
-                  label: kGridList,
-                  iconData: Icons.list_alt,
-                );
+                return AlertWidget(lottie: 'assets/lottie/emptyBag.json');
               } else if (snapshot.hasError) {
                 return AlertWidget(
                   iconData: Icons.warning_amber_rounded,

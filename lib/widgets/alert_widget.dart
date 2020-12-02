@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class AlertWidget extends StatelessWidget {
   const AlertWidget({
@@ -9,9 +10,10 @@ class AlertWidget extends StatelessWidget {
     this.buttonOnPress,
     this.iconColor,
     this.scaffoldColor,
+    this.lottie,
   }) : super(key: key);
 
-  final String label, buttonLabel;
+  final String label, buttonLabel, lottie;
   final IconData iconData;
   final Function buttonOnPress;
   final Color iconColor, scaffoldColor;
@@ -36,14 +38,19 @@ class AlertWidget extends StatelessWidget {
                           color: iconColor,
                           size: size.height * 0.1,
                         ),
+                  lottie == null
+                      ? Container()
+                      : Lottie.asset(lottie, fit: BoxFit.fitWidth),
                   SizedBox(height: size.height * 0.03),
-                  Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6.copyWith(
-                          fontWeight: FontWeight.normal,
+                  label == null
+                      ? Container()
+                      : Text(
+                          label,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headline6.copyWith(
+                                fontWeight: FontWeight.normal,
+                              ),
                         ),
-                  ),
                 ],
               ),
             ),

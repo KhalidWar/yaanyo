@@ -82,9 +82,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                     default:
                       if (snapshot.data.docs.isEmpty) {
                         return AlertWidget(
-                          iconData: Icons.receipt_long,
-                          label: kTaskList,
-                        );
+                            lottie: 'assets/lottie/taskCompleted.json');
                       } else if (snapshot.hasError) {
                         return AlertWidget(
                           iconData: Icons.warning_amber_rounded,

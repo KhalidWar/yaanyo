@@ -50,10 +50,7 @@ class _ChatTabState extends State<ChatTab> {
               return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.data.documents.isEmpty) {
-                return AlertWidget(
-                  label: kChatList,
-                  iconData: Icons.chat_bubble_outline,
-                );
+                return AlertWidget(lottie: 'assets/lottie/booGhost.json');
               } else if (snapshot.hasData) {
                 return ListView.builder(
                   shrinkWrap: true,
