@@ -4,9 +4,8 @@ const kDefaultProfilePic =
     'https://images.unsplash.com/photo-1544502062-f82887f03d1c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1427&q=80';
 
 const kNoInternetConnection = 'No Internet Connection';
-const kChatList = 'No Chat Found';
-const kGridList = 'No Check List Found';
-const kTaskList = 'No Tasks at hand';
+const kSomethingWentWrong = 'Something went wrong';
+const kLottieErrorCone = 'assets/lottie/errorCone.json';
 
 const kTextFormInputDecoration = InputDecoration(
   border: OutlineInputBorder(),

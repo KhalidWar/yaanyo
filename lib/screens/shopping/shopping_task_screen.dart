@@ -74,15 +74,17 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
                       return AlertWidget(
-                        label: kNoInternetConnection,
-                        iconData: Icons.warning_amber_rounded,
-                      );
+                          lottie: kLottieErrorCone, label: kSomethingWentWrong);
                     case ConnectionState.waiting:
                       return Center(child: CircularProgressIndicator());
                     default:
                       if (snapshot.data.docs.isEmpty) {
                         return AlertWidget(
-                            lottie: 'assets/lottie/taskCompleted.json');
+                          lottie: 'assets/lottie/taskCompleted.json',
+                          label: 'No Tasks at hand',
+                          lottieHeight:
+                              MediaQuery.of(context).size.height * 0.35,
+                        );
                       } else if (snapshot.hasError) {
                         return AlertWidget(
                           iconData: Icons.warning_amber_rounded,

@@ -43,9 +43,7 @@ class _ChatTabState extends State<ChatTab> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               return AlertWidget(
-                label: kNoInternetConnection,
-                iconData: Icons.warning_amber_rounded,
-              );
+                  lottie: kLottieErrorCone, label: kSomethingWentWrong);
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             default:

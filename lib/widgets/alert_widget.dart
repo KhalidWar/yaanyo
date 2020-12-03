@@ -11,12 +11,14 @@ class AlertWidget extends StatelessWidget {
     this.iconColor,
     this.scaffoldColor,
     this.lottie,
+    this.lottieHeight,
   }) : super(key: key);
 
   final String label, buttonLabel, lottie;
   final IconData iconData;
   final Function buttonOnPress;
   final Color iconColor, scaffoldColor;
+  final double lottieHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -40,16 +42,20 @@ class AlertWidget extends StatelessWidget {
                         ),
                   lottie == null
                       ? Container()
-                      : Lottie.asset(lottie, fit: BoxFit.fitWidth),
-                  SizedBox(height: size.height * 0.03),
+                      : Lottie.asset(
+                          lottie,
+                          height: lottieHeight,
+                          fit: BoxFit.fitHeight,
+                        ),
                   label == null
                       ? Container()
                       : Text(
                           label,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline6.copyWith(
-                                fontWeight: FontWeight.normal,
-                              ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6
+                              .copyWith(fontWeight: FontWeight.normal),
                         ),
                 ],
               ),
