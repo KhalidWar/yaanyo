@@ -29,6 +29,8 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
   final _formKey = GlobalKey<FormState>();
   final _gridTasksList = <String>[];
 
+  bool _showCheckedTaskList = false;
+
   Future<void> _addTask() async {
     if (_formKey.currentState.validate()) {
       final shoppingTask = ShoppingTask(
@@ -87,13 +89,29 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                               ConfirmationDialogs().signOut(context),
                         );
                       } else if (snapshot.hasData) {
+                        final docs = snapshot.data.documents;
+                        List<Map<String, dynamic>> checkedTaskList = [];
+                        List<Map<String, dynamic>> uncheckedTaskList = [];
+
+                        for (var i = 0; i < docs.length; i++) {
+                          _gridTasksList.add(docs[i]['taskLabel']);
+                          if (docs[i].data()['isDone'] == true) {
+                            checkedTaskList.add(docs[i].data());
+                          } else {
+                            uncheckedTaskList.add(docs[i].data());
+                          }
+                        }
+
                         return ListView.builder(
                           padding: EdgeInsets.only(left: 18),
-                          itemCount: snapshot.data.documents.length,
+                          shrinkWrap: true,
+                          itemCount: _showCheckedTaskList
+                              ? checkedTaskList.length
+                              : uncheckedTaskList.length,
                           itemBuilder: (BuildContext context, int index) {
-                            final data = snapshot.data.docs[index].data();
-                            _gridTasksList.add(data['taskLabel']);
-
+                            final data = _showCheckedTaskList
+                                ? checkedTaskList[index]
+                                : uncheckedTaskList[index];
                             return Row(
                               children: <Widget>[
                                 Icon(
@@ -112,7 +130,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                                   data['taskLabel'],
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .headline6
                                       .copyWith(
                                         decoration: data['isDone']
                                             ? TextDecoration.lineThrough
@@ -175,6 +193,14 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
       backgroundColor: widget.gridColor,
       elevation: 0,
       actions: [
+        IconButton(
+          icon: Icon(_showCheckedTaskList
+              ? Icons.check_box_rounded
+              : Icons.check_box_outline_blank),
+          onPressed: () {
+            setState(() => _showCheckedTaskList = !_showCheckedTaskList);
+          },
+        ),
         IconButton(
           icon: Icon(Icons.edit),
           onPressed: () {
