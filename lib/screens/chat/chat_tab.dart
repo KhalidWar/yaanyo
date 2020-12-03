@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
 import 'package:yaanyo/utilities/confirmation_dialog.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
@@ -19,16 +19,7 @@ class ChatTab extends StatefulWidget {
 }
 
 class _ChatTabState extends State<ChatTab> {
-  final _chatDBService = ChatDatabaseService();
-  Stream<QuerySnapshot> _chatStream;
-
   String _lastMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _chatStream = _chatDBService.getChatRooms();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +29,7 @@ class _ChatTabState extends State<ChatTab> {
           iconData: Icons.chat,
           child: StartNewChatScreen()),
       body: StreamBuilder(
-        stream: _chatStream,
+        stream: context.read(chatDatabaseServiceProvider).getChatRooms(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -69,7 +60,8 @@ class _ChatTabState extends State<ChatTab> {
                       profilePic = data['users'][1]['profilePic'];
                     }
 
-                    _chatDBService
+                    context
+                        .read(chatDatabaseServiceProvider)
                         .getLastMessage(data['chatRoomID'])
                         .then((value) {
                       _lastMessage = value;

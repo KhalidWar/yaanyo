@@ -11,33 +11,22 @@ final shoppingDatabaseServiceProvider =
 );
 
 class ShoppingDatabaseService extends ChangeNotifier {
-  final CollectionReference _shoppingCollection =
-      FirebaseFirestore.instance.collection('shopping');
+  final _shoppingGrid = FirebaseFirestore.instance
+      .collection('shopping')
+      .doc(FirebaseAuth.instance.currentUser.uid)
+      .collection('shoppingGrid');
 
   Future<void> createNewShoppingGrid({ShoppingGrid shoppingGrid}) async {
-    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-    _shoppingCollection
-        .doc(currentUserUID)
-        .collection('shoppingGrid')
-        .doc(shoppingGrid.storeName)
-        .set(shoppingGrid.toJson());
+    _shoppingGrid.doc(shoppingGrid.storeName).set(shoppingGrid.toJson());
   }
 
   Stream<QuerySnapshot> getShoppingGridStream() {
-    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-    return _shoppingCollection
-        .doc(currentUserUID)
-        .collection('shoppingGrid')
-        .orderBy('time', descending: false)
-        .snapshots();
+    return _shoppingGrid.orderBy('time', descending: false).snapshots();
   }
 
   Future<void> addShoppingTask(
       {String storeName, ShoppingTask shoppingTask}) async {
-    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-    _shoppingCollection
-        .doc(currentUserUID)
-        .collection('shoppingGrid')
+    _shoppingGrid
         .doc(storeName)
         .collection('shoppingTask')
         .doc(shoppingTask.taskLabel)
@@ -45,10 +34,7 @@ class ShoppingDatabaseService extends ChangeNotifier {
   }
 
   Stream<QuerySnapshot> getShoppingTaskStream(String storeName) {
-    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-    return _shoppingCollection
-        .doc(currentUserUID)
-        .collection('shoppingGrid')
+    return _shoppingGrid
         .doc(storeName)
         .collection('shoppingTask')
         .orderBy('time', descending: true)
@@ -57,10 +43,7 @@ class ShoppingDatabaseService extends ChangeNotifier {
 
   Future<void> toggleShoppingTask(
       {ShoppingTask shoppingTask, String storeName}) async {
-    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-    return await _shoppingCollection
-        .doc(currentUserUID)
-        .collection('shoppingGrid')
+    return await _shoppingGrid
         .doc(storeName)
         .collection('shoppingTask')
         .doc(shoppingTask.taskLabel)
@@ -69,23 +52,14 @@ class ShoppingDatabaseService extends ChangeNotifier {
 
   Future<void> deleteShoppingGrid(
       {String storeName, List<String> gridTasksList}) async {
-    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-
     /// deletes shoppingGrid document but does not delete its
     /// subcollections (shoppingTasks)
     /// https://firebase.google.com/docs/firestore/manage-data/delete-data
-    _shoppingCollection
-        .doc(currentUserUID)
-        .collection('shoppingGrid')
-        .doc(storeName)
-        .delete()
-        .whenComplete(() {
+    _shoppingGrid.doc(storeName).delete().whenComplete(() {
       /// loop in gridTask list to delete every entry otherwise re-creating a shoppingGrid
       /// with same old name will show old gridTask items since they are exist
       for (String task in gridTasksList) {
-        _shoppingCollection
-            .doc(currentUserUID)
-            .collection('shoppingGrid')
+        _shoppingGrid
             .doc(storeName)
             .collection('shoppingTask')
             .doc('$task')
@@ -96,23 +70,17 @@ class ShoppingDatabaseService extends ChangeNotifier {
 
   Future<void> updateShoppingGrid(
       {String storeName, ShoppingGrid shoppingGrid}) async {
-    final currentUserUID = FirebaseAuth.instance.currentUser.uid;
-    final _shoppingGridCollection = FirebaseFirestore.instance
-        .collection('shopping')
-        .doc(currentUserUID)
-        .collection('shoppingGrid');
-
-    await _shoppingGridCollection.doc(storeName).get().then((doc) {
+    await _shoppingGrid.doc(storeName).get().then((doc) {
       Map<String, dynamic> newData = {};
       if (doc.exists) {
         newData
           ..addAll(doc.data())
           ..update('storeName', (value) => shoppingGrid.storeName);
-        _shoppingGridCollection.doc(shoppingGrid.storeName).set(newData);
+        _shoppingGrid.doc(shoppingGrid.storeName).set(newData);
       }
     });
 
-    await _shoppingGridCollection
+    await _shoppingGrid
         .doc(storeName)
         .collection('shoppingTask')
         .get()
@@ -122,13 +90,13 @@ class ShoppingDatabaseService extends ChangeNotifier {
             taskLabel: task['taskLabel'],
             isDone: task['isDone'],
             time: task['time']);
-        _shoppingGridCollection
+        _shoppingGrid
             .doc(shoppingGrid.storeName)
             .collection('shoppingTask')
             .doc(shoppingTask.taskLabel)
             .set(shoppingTask.toJson())
             .whenComplete(() {
-          _shoppingGridCollection
+          _shoppingGrid
               .doc(storeName)
               .collection('shoppingTask')
               .doc('${task['taskLabel']}')
@@ -136,6 +104,6 @@ class ShoppingDatabaseService extends ChangeNotifier {
         });
       }
     });
-    _shoppingGridCollection.doc(storeName).delete();
+    _shoppingGrid.doc(storeName).delete();
   }
 }

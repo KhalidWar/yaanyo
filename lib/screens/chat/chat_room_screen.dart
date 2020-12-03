@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/models/message.dart';
 import 'package:yaanyo/services/database/chat_database_service.dart';
 import 'package:yaanyo/utilities/confirmation_dialog.dart';
@@ -27,12 +28,9 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  final _chatDatabaseService = ChatDatabaseService();
   final currentUserEmail = FirebaseAuth.instance.currentUser.email;
 
-  final TextEditingController _messageInputController = TextEditingController();
-
-  Stream<QuerySnapshot> _chatMessageStream;
+  final _messageInputController = TextEditingController();
 
   void _sendMessage() async {
     if (_messageInputController.text.isNotEmpty) {
@@ -40,23 +38,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           message: _messageInputController.text,
           time: Timestamp.now(),
           sender: currentUserEmail);
-      await _chatDatabaseService.addMessage(widget.chatRoomID, message);
+      await context
+          .read(chatDatabaseServiceProvider)
+          .addMessage(widget.chatRoomID, message);
       _messageInputController.clear();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Can not send empty message'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+          behavior: SnackBarBehavior.floating));
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _chatMessageStream =
-        _chatDatabaseService.getChatMessages(widget.chatRoomID);
   }
 
   @override
@@ -67,7 +57,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         children: [
           Expanded(
             child: StreamBuilder(
-              stream: _chatMessageStream,
+              stream: context
+                  .read(chatDatabaseServiceProvider)
+                  .getChatMessages(widget.chatRoomID),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:

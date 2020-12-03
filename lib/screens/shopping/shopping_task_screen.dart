@@ -29,18 +29,14 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
   final _formKey = GlobalKey<FormState>();
   final _gridTasksList = <String>[];
 
-  Future _addTask() async {
+  Future<void> _addTask() async {
     if (_formKey.currentState.validate()) {
       final shoppingTask = ShoppingTask(
-        taskLabel: _taskInputController.text.trim(),
-        isDone: false,
-        time: Timestamp.now(),
-      );
-
+          taskLabel: _taskInputController.text.trim(),
+          isDone: false,
+          time: Timestamp.now());
       context.read(shoppingDatabaseServiceProvider).addShoppingTask(
-            storeName: widget.storeName,
-            shoppingTask: shoppingTask,
-          );
+          storeName: widget.storeName, shoppingTask: shoppingTask);
       _taskInputController.clear();
     }
   }
@@ -48,11 +44,8 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
   void _toggleShoppingTask(bool toggle, String taskLabel) {
     final ShoppingTask shoppingTask =
         ShoppingTask(isDone: toggle, taskLabel: taskLabel);
-
     context.read(shoppingDatabaseServiceProvider).toggleShoppingTask(
-          storeName: widget.storeName,
-          shoppingTask: shoppingTask,
-        );
+        storeName: widget.storeName, shoppingTask: shoppingTask);
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/services/database/user_database_service.dart';
 import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
@@ -10,47 +10,30 @@ import '../../constants.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({Key key}) : super(key: key);
-  static const String id = 'profile_screen';
 
   @override
   _ProfileTabState createState() => _ProfileTabState();
 }
 
 class _ProfileTabState extends State<ProfileTab> {
-  final _userDService = UserDatabaseService();
-  final TextEditingController _textEditingController = TextEditingController();
+  final _textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Stream<QuerySnapshot> currentUserStream;
-
-  String _error = '';
-
-  Future _updateName() async {
+  void _updateName() {
     if (_formKey.currentState.validate()) {
-      final userData = await _userDService
+      context
+          .read(userDatabaseServiceProvider)
           .updateUserName(_textEditingController.text.trim());
-      if (userData == null) {
-        setState(() {
-          _error = 'Something went wrong. Could not update name';
-        });
-      }
       _textEditingController.clear();
       Navigator.pop(context);
-      setState(() => _error = '');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    currentUserStream = _userDService.getCurrentUserStream();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return StreamBuilder(
-      stream: currentUserStream,
+      stream: context.read(userDatabaseServiceProvider).getCurrentUserStream(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -160,10 +143,6 @@ class _ProfileTabState extends State<ProfileTab> {
               decoration: kTextFormInputDecoration.copyWith(
                   hintText: '${data['name']}'),
             ),
-          ),
-          Text(
-            _error,
-            style: TextStyle(color: Colors.red),
           ),
         ],
       ),

@@ -12,18 +12,25 @@ import 'package:yaanyo/widgets/grid_box.dart';
 import '../../constants.dart';
 import 'create_new_grid_box.dart';
 
-class ShoppingTab extends ConsumerWidget {
+class ShoppingTab extends StatefulWidget {
+  const ShoppingTab({Key key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final shoppingGridStream =
-        watch(shoppingDatabaseServiceProvider).getShoppingGridStream();
+  _ShoppingTabState createState() => _ShoppingTabState();
+}
+
+class _ShoppingTabState extends State<ShoppingTab> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FABOpenContainer(
           heroTag: 'shoppingTab',
           iconData: Icons.add,
           child: CreateNewGridBox()),
       body: StreamBuilder(
-        stream: shoppingGridStream,
+        stream: context
+            .read(shoppingDatabaseServiceProvider)
+            .getShoppingGridStream(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
