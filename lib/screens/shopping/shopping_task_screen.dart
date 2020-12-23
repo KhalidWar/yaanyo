@@ -103,7 +103,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                         }
 
                         return ListView.builder(
-                          padding: EdgeInsets.only(left: 18),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
                           shrinkWrap: true,
                           itemCount: _showCheckedTaskList
                               ? checkedTaskList.length
@@ -126,17 +126,20 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
                                     data['taskLabel'],
                                   ),
                                 ),
-                                Text(
-                                  data['taskLabel'],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline6
-                                      .copyWith(
-                                        decoration: data['isDone']
-                                            ? TextDecoration.lineThrough
-                                            : TextDecoration.none,
-                                      ),
+                                Expanded(
+                                  child: Text(
+                                    data['taskLabel'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .copyWith(
+                                          decoration: data['isDone']
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none,
+                                        ),
+                                  ),
                                 ),
+                                SizedBox(width: 1),
                               ],
                             );
                           },
