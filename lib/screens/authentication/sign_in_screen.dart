@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/screens/authentication/sign_up_screen.dart';
-import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/state_management/providers.dart';
 import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/error_message_alert.dart';
 
