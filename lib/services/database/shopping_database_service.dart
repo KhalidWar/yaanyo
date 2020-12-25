@@ -1,16 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/models/shopping_grid.dart';
 import 'package:yaanyo/models/shopping_task.dart';
 
-final shoppingDatabaseServiceProvider =
-    ChangeNotifierProvider<ShoppingDatabaseService>(
-  (ref) => ShoppingDatabaseService(),
-);
-
-class ShoppingDatabaseService extends ChangeNotifier {
+class ShoppingDatabaseService {
   final _shoppingGrid = FirebaseFirestore.instance
       .collection('shopping')
       .doc(FirebaseAuth.instance.currentUser.uid)

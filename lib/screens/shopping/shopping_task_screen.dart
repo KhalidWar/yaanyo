@@ -5,7 +5,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/models/shopping_task.dart';
 import 'package:yaanyo/screens/shopping/create_new_grid_box.dart';
-import 'package:yaanyo/services/database/shopping_database_service.dart';
+import 'package:yaanyo/state_management/providers.dart';
 import 'package:yaanyo/utilities/confirmation_dialog.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
 

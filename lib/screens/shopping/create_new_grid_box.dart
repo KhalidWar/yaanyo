@@ -6,7 +6,7 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yaanyo/models/shopping_grid.dart';
-import 'package:yaanyo/services/database/shopping_database_service.dart';
+import 'package:yaanyo/state_management/providers.dart';
 import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 
