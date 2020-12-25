@@ -2,52 +2,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/screens/authentication/sign_up_screen.dart';
-import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/state_management/auth_state_manager.dart';
 import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/error_message_alert.dart';
 
 import '../../constants.dart';
 
-class SignInScreen extends StatefulWidget {
-  @override
-  _SignInScreenState createState() => _SignInScreenState();
-}
-
-class _SignInScreenState extends State<SignInScreen> {
+class SignInScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
-  String _email, _password, _error;
-  bool _isLoading = false;
-
-  void _signIn() {
-    setState(() => _error = null);
-    if (_formKey.currentState.validate()) {
-      setState(() {
-        _isLoading = true;
-        _error = null;
-      });
-      context
-          .read(authServiceProvider)
-          .signInWithEmailAndPassword(_email, _password)
-          .then((value) {
-        setState(() {
-          _isLoading = false;
-          _error = value;
-        });
-      });
-    }
-  }
-
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+  Widget build(BuildContext context, ScopedReader watch) {
+    final size = MediaQuery.of(context).size;
+    final authStateProvider = watch(authStateManager);
+    final isLoading = authStateProvider.isLoading;
+    final error = authStateProvider.error;
+    final setEmail = authStateProvider.setEmail;
+    final setPassword = authStateProvider.setPassword;
+    final signIn = authStateProvider.signIn;
 
     return Scaffold(
       backgroundColor: Colors.blue[500],
       body: SafeArea(
         child: Stack(
           children: [
-            ErrorMessageAlert(errorMessage: _error),
+            ErrorMessageAlert(errorMessage: error),
             Center(
               child: Container(
                 height: size.height * 0.55,
@@ -62,10 +41,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Sign In',
-                          style: Theme.of(context).textTheme.headline4.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold)),
+                      Text(
+                        'Sign In',
+                        style: Theme.of(context).textTheme.headline4.copyWith(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      ),
                       SizedBox(height: size.height * 0.04),
                       TextFormField(
                         //todo validate email format using RegExp
@@ -73,10 +53,9 @@ class _SignInScreenState extends State<SignInScreen> {
                             FormValidator().authEmailField(input),
                         textInputAction: TextInputAction.next,
                         decoration: kTextFormInputDecoration.copyWith(
-                            hintText: 'Email'),
-                        onChanged: (input) {
-                          setState(() => _email = input);
-                        },
+                          hintText: 'Email',
+                        ),
+                        onChanged: (input) => setEmail(input),
                       ),
                       SizedBox(height: size.height * 0.01),
                       TextFormField(
@@ -84,24 +63,21 @@ class _SignInScreenState extends State<SignInScreen> {
                         validator: (input) =>
                             FormValidator().authPasswordField(input),
                         textInputAction: TextInputAction.go,
-                        onFieldSubmitted: (value) => _signIn(),
+                        onFieldSubmitted: (value) => signIn(context, _formKey),
                         decoration: kTextFormInputDecoration.copyWith(
                             hintText: 'Password'),
-                        onChanged: (input) {
-                          setState(() {
-                            _password = input;
-                          });
-                        },
+                        onChanged: (input) => setPassword(input),
                       ),
                       SizedBox(height: size.height * 0.03),
                       Container(
                         width: size.width * 0.4,
                         decoration: BoxDecoration(
-                            color: Colors.blue[500],
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                          color: Colors.blue[500],
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
                         child: FlatButton(
-                          onPressed: () => _signIn(),
-                          child: _isLoading
+                          onPressed: () => signIn(context, _formKey),
+                          child: isLoading ?? false
                               ? CircularProgressIndicator(
                                   backgroundColor: Colors.black,
                                 )
@@ -115,10 +91,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       SizedBox(height: size.height * 0.02),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return SignUpScreen();
-                          }));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignUpScreen(),
+                              ));
                         },
                         child: Text(
                           'No account? Sign Up Here!',

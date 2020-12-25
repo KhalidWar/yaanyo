@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yaanyo/services/auth_service.dart';
+import 'package:yaanyo/state_management/providers.dart';
 
 class ConfirmationDialogs {
   void signOut(context) {

@@ -1,15 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/models/app_user.dart';
 
 import '../constants.dart';
 import 'database/user_database_service.dart';
 
-final authServiceProvider =
-    ChangeNotifierProvider<AuthService>((ref) => AuthService());
-
-class AuthService extends ChangeNotifier {
+class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Stream<User> userStream() => _firebaseAuth.authStateChanges();
