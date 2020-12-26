@@ -11,8 +11,8 @@ import 'package:yaanyo/state_management/providers.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 
-import '../../constants.dart';
-import 'create_new_grid_box.dart';
+import '../constants.dart';
+import 'shopping/create_new_grid_box.dart';
 
 final shoppingGridStream = StreamProvider<QuerySnapshot>(
   (ref) {

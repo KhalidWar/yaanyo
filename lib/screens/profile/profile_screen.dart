@@ -2,7 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yaanyo/services/database/user_database_service.dart';
+import 'package:yaanyo/services/user_database_service.dart';
 import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
 
@@ -33,6 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(title: Text('Profile')),
       body: StreamBuilder(
         stream:
             context.read(userDatabaseServiceProvider).getCurrentUserStream(),

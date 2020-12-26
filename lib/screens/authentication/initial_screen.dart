@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/screens/authentication/sign_in_screen.dart';
-import 'package:yaanyo/screens/shopping/home_screen.dart';
+import 'package:yaanyo/screens/home_screen.dart';
 import 'package:yaanyo/state_management/providers.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
 
@@ -15,17 +15,18 @@ class InitialScreen extends ConsumerWidget {
 
     return Scaffold(
       body: stream.when(
-          loading: () => Center(child: CircularProgressIndicator()),
-          data: (data) {
-            if (data == null) {
-              return SignInScreen();
-            } else {
-              return HomeScreen();
-            }
-          },
-          error: (error, stackTrace) {
-            return AlertWidget();
-          }),
+        loading: () => Center(child: CircularProgressIndicator()),
+        data: (data) {
+          if (data == null) {
+            return SignInScreen();
+          } else {
+            return HomeScreen();
+          }
+        },
+        error: (error, stackTrace) {
+          return AlertWidget();
+        },
+      ),
     );
   }
 }
