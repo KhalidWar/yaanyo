@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/models/shopping_task.dart';
 import 'package:yaanyo/screens/shopping/create_new_grid_box.dart';
@@ -54,137 +55,141 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: Scaffold(
-        backgroundColor: widget.gridColor,
-        appBar: buildAppBar(),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Expanded(
-              child: StreamBuilder(
-                stream: context
-                    .read(shoppingDatabaseServiceProvider)
-                    .getShoppingTaskStream(widget.storeName),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                      return AlertWidget(
-                          lottie: kLottieErrorCone, label: kSomethingWentWrong);
-                    case ConnectionState.waiting:
-                      return Center(child: CircularProgressIndicator());
-                    default:
-                      if (snapshot.data.docs.isEmpty) {
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(systemNavigationBarColor: widget.gridColor),
+        child: Scaffold(
+          backgroundColor: widget.gridColor,
+          appBar: buildAppBar(),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                child: StreamBuilder(
+                  stream: context
+                      .read(shoppingDatabaseServiceProvider)
+                      .getShoppingTaskStream(widget.storeName),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
                         return AlertWidget(
-                          lottie: 'assets/lottie/taskCompleted.json',
-                          label: 'No Tasks at hand',
-                          lottieHeight:
-                              MediaQuery.of(context).size.height * 0.35,
-                        );
-                      } else if (snapshot.hasError) {
-                        return AlertWidget(
-                          iconData: Icons.warning_amber_rounded,
-                          label: 'Something went wrong\n${snapshot.error}',
-                          buttonLabel: 'Sign out',
-                          buttonOnPress: () =>
-                              ConfirmationDialogs().signOut(context),
-                        );
-                      } else if (snapshot.hasData) {
-                        final docs = snapshot.data.documents;
-                        List<Map<String, dynamic>> checkedTaskList = [];
-                        List<Map<String, dynamic>> uncheckedTaskList = [];
+                            lottie: kLottieErrorCone,
+                            label: kSomethingWentWrong);
+                      case ConnectionState.waiting:
+                        return Center(child: CircularProgressIndicator());
+                      default:
+                        if (snapshot.data.docs.isEmpty) {
+                          return AlertWidget(
+                            lottie: 'assets/lottie/taskCompleted.json',
+                            label: 'No Tasks at hand',
+                            lottieHeight:
+                                MediaQuery.of(context).size.height * 0.35,
+                          );
+                        } else if (snapshot.hasError) {
+                          return AlertWidget(
+                            iconData: Icons.warning_amber_rounded,
+                            label: 'Something went wrong\n${snapshot.error}',
+                            buttonLabel: 'Sign out',
+                            buttonOnPress: () =>
+                                ConfirmationDialogs().signOut(context),
+                          );
+                        } else if (snapshot.hasData) {
+                          final docs = snapshot.data.documents;
+                          List<Map<String, dynamic>> checkedTaskList = [];
+                          List<Map<String, dynamic>> uncheckedTaskList = [];
 
-                        for (var i = 0; i < docs.length; i++) {
-                          _gridTasksList.add(docs[i]['taskLabel']);
-                          if (docs[i].data()['isDone'] == true) {
-                            checkedTaskList.add(docs[i].data());
-                          } else {
-                            uncheckedTaskList.add(docs[i].data());
+                          for (var i = 0; i < docs.length; i++) {
+                            _gridTasksList.add(docs[i]['taskLabel']);
+                            if (docs[i].data()['isDone'] == true) {
+                              checkedTaskList.add(docs[i].data());
+                            } else {
+                              uncheckedTaskList.add(docs[i].data());
+                            }
                           }
-                        }
 
-                        return ListView.builder(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          shrinkWrap: true,
-                          itemCount: _showCheckedTaskList
-                              ? checkedTaskList.length
-                              : uncheckedTaskList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final data = _showCheckedTaskList
-                                ? checkedTaskList[index]
-                                : uncheckedTaskList[index];
-                            return Row(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.reorder_rounded,
-                                  color: Colors.black45,
-                                ),
-                                Checkbox(
-                                  visualDensity: VisualDensity.compact,
-                                  value: data['isDone'],
-                                  onChanged: (toggle) => _toggleShoppingTask(
-                                    toggle,
-                                    data['taskLabel'],
+                          return ListView.builder(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            shrinkWrap: true,
+                            itemCount: _showCheckedTaskList
+                                ? checkedTaskList.length
+                                : uncheckedTaskList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final data = _showCheckedTaskList
+                                  ? checkedTaskList[index]
+                                  : uncheckedTaskList[index];
+                              return Row(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.reorder_rounded,
+                                    color: Colors.black45,
                                   ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    data['taskLabel'],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .copyWith(
-                                          decoration: data['isDone']
-                                              ? TextDecoration.lineThrough
-                                              : TextDecoration.none,
-                                        ),
+                                  Checkbox(
+                                    visualDensity: VisualDensity.compact,
+                                    value: data['isDone'],
+                                    onChanged: (toggle) => _toggleShoppingTask(
+                                      toggle,
+                                      data['taskLabel'],
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 1),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                  }
-                  return Center(child: CircularProgressIndicator());
-                },
+                                  Expanded(
+                                    child: Text(
+                                      data['taskLabel'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .copyWith(
+                                            decoration: data['isDone']
+                                                ? TextDecoration.lineThrough
+                                                : TextDecoration.none,
+                                          ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 1),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              margin: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: widget.gridColor,
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        controller: _taskInputController,
-                        validator: (value) =>
-                            value.isEmpty ? 'Field can not be empty' : null,
-                        textInputAction: TextInputAction.go,
-                        onFieldSubmitted: (value) => _addTask(),
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Add task here...',
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: widget.gridColor,
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          controller: _taskInputController,
+                          validator: (value) =>
+                              value.isEmpty ? 'Field can not be empty' : null,
+                          textInputAction: TextInputAction.go,
+                          onFieldSubmitted: (value) => _addTask(),
+                          textCapitalization: TextCapitalization.sentences,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Add task here...',
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () => _addTask(),
-                  ),
-                ],
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () => _addTask(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -194,6 +199,7 @@ class _ShoppingTaskScreenState extends State<ShoppingTaskScreen> {
     return AppBar(
       title: Text(widget.storeName),
       backgroundColor: widget.gridColor,
+      brightness: Brightness.dark,
       elevation: 0,
       actions: [
         IconButton(

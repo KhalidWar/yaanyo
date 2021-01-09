@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -132,80 +133,85 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: Scaffold(
-        appBar: buildAppBar(),
-        body: Padding(
-          padding: EdgeInsets.all(10),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    controller: _textInputController,
-                    validator: (input) =>
-                        FormValidator().createNewGridBox(input),
-                    textInputAction: TextInputAction.next,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: kTextFormInputDecoration.copyWith(
-                      hintText: widget.storeName == null
-                          ? 'Enter Grid Name'
-                          : widget.storeName,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+        ),
+        child: Scaffold(
+          appBar: buildAppBar(),
+          body: Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      controller: _textInputController,
+                      validator: (input) =>
+                          FormValidator().createNewGridBox(input),
+                      textInputAction: TextInputAction.next,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: kTextFormInputDecoration.copyWith(
+                        hintText: widget.storeName == null
+                            ? 'Enter Grid Name'
+                            : widget.storeName,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: size.height * 0.03),
-                Container(
-                  height: size.height * 0.32,
-                  width: size.width * 0.5,
-                  decoration: BoxDecoration(
-                    color: widget.gridColor == null
-                        ? _mainColor ?? kGridColorList[0]
-                        : widget.gridColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: GridBox(
-                    storeName: widget.storeName == null
-                        ? _textInputController.text.trim()
-                        : widget.storeName,
-                    storeIcon: widget.storeIcon == null
-                        ? kStoreIconList[_selectedIndex ?? 0]
-                        : widget.storeIcon,
-                  ),
-                ),
-                SizedBox(height: size.height * 0.02),
-                ListTile(
-                  onTap: _gridColorPicker,
-                  leading: Text(
-                    'Grid Color',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  trailing: CircleAvatar(
-                    backgroundColor: widget.gridColor == null
-                        ? _mainColor ?? kGridColorList[0]
-                        : widget.gridColor,
-                    radius: 25,
-                  ),
-                ),
-                SizedBox(height: size.height * 0.02),
-                ListTile(
-                  onTap: _gridIconPicker,
-                  leading: Text(
-                    'Grid Icon',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  trailing: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 25,
-                    child: SvgPicture.asset(
-                      widget.storeIcon == null
+                  SizedBox(height: size.height * 0.03),
+                  Container(
+                    height: size.height * 0.32,
+                    width: size.width * 0.5,
+                    decoration: BoxDecoration(
+                      color: widget.gridColor == null
+                          ? _mainColor ?? kGridColorList[0]
+                          : widget.gridColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: GridBox(
+                      storeName: widget.storeName == null
+                          ? _textInputController.text.trim()
+                          : widget.storeName,
+                      storeIcon: widget.storeIcon == null
                           ? kStoreIconList[_selectedIndex ?? 0]
                           : widget.storeIcon,
-                      width: 40,
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: size.height * 0.02),
+                  ListTile(
+                    onTap: _gridColorPicker,
+                    leading: Text(
+                      'Grid Color',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    trailing: CircleAvatar(
+                      backgroundColor: widget.gridColor == null
+                          ? _mainColor ?? kGridColorList[0]
+                          : widget.gridColor,
+                      radius: 25,
+                    ),
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                  ListTile(
+                    onTap: _gridIconPicker,
+                    leading: Text(
+                      'Grid Icon',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    trailing: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 25,
+                      child: SvgPicture.asset(
+                        widget.storeIcon == null
+                            ? kStoreIconList[_selectedIndex ?? 0]
+                            : widget.storeIcon,
+                        width: 40,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -216,6 +222,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
   AppBar buildAppBar() {
     return AppBar(
       title: Text('Create New Grid'),
+      brightness: Brightness.dark,
       actions: [
         IconButton(
           icon: Icon(Icons.done, color: Colors.white),
