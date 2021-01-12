@@ -35,7 +35,7 @@ class ShoppingDatabaseService {
   }
 
   Future<void> toggleShoppingTask(
-      {ShoppingTask shoppingTask, String storeName}) async {
+      ShoppingTask shoppingTask, String storeName) async {
     return await _shoppingGrid
         .doc(storeName)
         .collection('shoppingTask')

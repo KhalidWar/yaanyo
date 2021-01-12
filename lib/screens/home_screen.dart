@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/screens/settings/settings_screen.dart';
 import 'package:yaanyo/screens/shopping/shopping_task_screen.dart';
 import 'package:yaanyo/state_management/providers.dart';
+import 'package:yaanyo/state_management/shopping_task_state_manager.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
 import 'package:yaanyo/widgets/grid_box.dart';
 
@@ -22,6 +23,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final stream = watch(shoppingGridStream);
+    final shoppingTaskManager = watch(shoppingTaskManagerProvider);
 
     return stream.when(
       loading: () => Center(child: CircularProgressIndicator()),
@@ -63,11 +65,12 @@ class HomeScreen extends ConsumerWidget {
                     );
                   },
                   openBuilder: (context, openWidget) {
-                    return ShoppingTaskScreen(
-                      storeName: gridData['storeName'],
-                      gridColor: kGridColorList[gridData['gridColorInt']],
-                      storeIcon: gridData['storeIcon'],
-                    );
+                    shoppingTaskManager.storeName = gridData['storeName'];
+                    shoppingTaskManager.storeIcon = gridData['storeIcon'];
+                    shoppingTaskManager.gridColor =
+                        kGridColorList[gridData['gridColorInt']];
+
+                    return ShoppingTaskScreen();
                   },
                 );
               },
