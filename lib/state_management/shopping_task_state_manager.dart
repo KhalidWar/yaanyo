@@ -28,7 +28,7 @@ class ShoppingTaskManager extends ChangeNotifier {
       final shoppingTask = ShoppingTask(
           taskLabel: taskLabel, isDone: false, time: Timestamp.now());
       context
-          .read(shoppingDatabaseServiceProvider)
+          .read(shoppingServiceProvider)
           .addShoppingTask(storeName: storeName, shoppingTask: shoppingTask);
     }
   }
@@ -38,7 +38,7 @@ class ShoppingTaskManager extends ChangeNotifier {
     final shoppingTask = ShoppingTask(isDone: toggle, taskLabel: taskLabel);
 
     await context
-        .read(shoppingDatabaseServiceProvider)
+        .read(shoppingServiceProvider)
         .toggleShoppingTask(shoppingTask, storeName);
   }
 
@@ -70,9 +70,7 @@ class ShoppingTaskManager extends ChangeNotifier {
             ElevatedButton(
               child: Text('Yes'),
               onPressed: () {
-                context
-                    .read(shoppingDatabaseServiceProvider)
-                    .deleteShoppingGrid(
+                context.read(shoppingServiceProvider).deleteShoppingGrid(
                       storeName: storeName,
                       gridTasksList: gridTasksList,
                     );

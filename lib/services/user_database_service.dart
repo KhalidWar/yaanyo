@@ -4,11 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/models/app_user.dart';
 
-final userDatabaseServiceProvider = ChangeNotifierProvider<UserDatabaseService>(
-  (ref) => UserDatabaseService(),
-);
+final userServiceProvider =
+    ChangeNotifierProvider<UserService>((ref) => UserService());
 
-class UserDatabaseService extends ChangeNotifier {
+class UserService extends ChangeNotifier {
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection('users');
 
@@ -27,7 +26,7 @@ class UserDatabaseService extends ChangeNotifier {
         .snapshots();
   }
 
-  Future updateUserName(String newName) async {
+  Future<void> updateUserName(String newName) async {
     final currentUserEmail = FirebaseAuth.instance.currentUser.email;
     final newNameMap = {'name': newName};
     return await _usersCollection.doc(currentUserEmail).update(newNameMap);

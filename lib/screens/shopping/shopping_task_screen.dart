@@ -6,16 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/state_management/providers.dart';
 import 'package:yaanyo/state_management/shopping_task_state_manager.dart';
-import 'package:yaanyo/utilities/confirmation_dialog.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
 
 final shoppingTaskStream = StreamProvider.autoDispose<QuerySnapshot>(
   (ref) {
     final storeName = ref.read(shoppingTaskManagerProvider).storeName;
 
-    return ref
-        .read(shoppingDatabaseServiceProvider)
-        .getShoppingTaskStream(storeName);
+    return ref.read(shoppingServiceProvider).getShoppingTaskStream(storeName);
   },
 );
 
@@ -73,7 +70,9 @@ class ShoppingTaskScreen extends ConsumerWidget {
                 child: stream.when(
                   loading: () => Center(child: CircularProgressIndicator()),
                   data: (data) {
-                    if (data.docs.isEmpty) {
+                    final docs = data.docs;
+
+                    if (docs.isEmpty) {
                       return AlertWidget(
                         lottie: 'assets/lottie/taskCompleted.json',
                         label: 'No Tasks at hand',
@@ -81,7 +80,6 @@ class ShoppingTaskScreen extends ConsumerWidget {
                       );
                     }
 
-                    final docs = data.docs;
                     List<Map<String, dynamic>> checkedTaskList = [];
                     List<Map<String, dynamic>> uncheckedTaskList = [];
 
@@ -112,6 +110,7 @@ class ShoppingTaskScreen extends ConsumerWidget {
                             ),
                             Checkbox(
                               visualDensity: VisualDensity.compact,
+                              activeColor: Colors.black54,
                               value: data['isDone'],
                               onChanged: (toggle) {
                                 toggleShoppingTask(
@@ -146,8 +145,6 @@ class ShoppingTaskScreen extends ConsumerWidget {
                       iconData: Icons.warning_amber_rounded,
                       label: 'Something went wrong\n$error',
                       buttonLabel: 'Sign out',
-                      buttonOnPress: () =>
-                          ConfirmationDialogs().signOut(context),
                     );
                   }),
                 ),
@@ -169,6 +166,7 @@ class ShoppingTaskScreen extends ConsumerWidget {
                           controller: _taskInputController,
                           validator: (value) =>
                               value.isEmpty ? 'Field can not be empty' : null,
+                          cursorColor: Colors.black,
                           textInputAction: TextInputAction.go,
                           onFieldSubmitted: (value) {
                             addTask(context, _formKey,

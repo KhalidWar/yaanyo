@@ -40,7 +40,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
         gridColorInt: kGridColorList.indexOf(_mainColor ?? Colors.red),
       );
       context
-          .read(shoppingDatabaseServiceProvider)
+          .read(shoppingServiceProvider)
           .createNewShoppingGrid(shoppingGrid: shoppingGrid);
       Navigator.pop(context);
     }
@@ -58,7 +58,7 @@ class _CreateNewGridBoxState extends State<CreateNewGridBox> {
           ? kGridColorList.indexOf(widget.gridColor)
           : kGridColorList.indexOf(_mainColor),
     );
-    context.read(shoppingDatabaseServiceProvider).updateShoppingGrid(
+    context.read(shoppingServiceProvider).updateShoppingGrid(
           storeName: widget.storeName,
           shoppingGrid: shoppingGrid,
         );

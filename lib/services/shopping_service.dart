@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yaanyo/models/shopping_grid.dart';
 import 'package:yaanyo/models/shopping_task.dart';
 
-class ShoppingDatabaseService {
+class ShoppingService {
   final _shoppingGrid = FirebaseFirestore.instance
       .collection('shopping')
       .doc(FirebaseAuth.instance.currentUser.uid)

@@ -31,7 +31,7 @@ class AuthService {
             email: email,
             uid: value.user.uid,
             profilePic: kDefaultProfilePic);
-        await UserDatabaseService().addUserToDatabase(appUser: appUser);
+        await UserService().addUserToDatabase(appUser: appUser);
       });
       return null;
     } catch (e) {

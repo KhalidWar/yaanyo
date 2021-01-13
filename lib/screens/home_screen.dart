@@ -16,7 +16,7 @@ import '../constants.dart';
 import 'shopping/create_new_grid_box.dart';
 
 final shoppingGridStream = StreamProvider<QuerySnapshot>((ref) {
-  return ref.watch(shoppingDatabaseServiceProvider).getShoppingGridStream();
+  return ref.watch(shoppingServiceProvider).getShoppingGridStream();
 });
 
 class HomeScreen extends ConsumerWidget {
