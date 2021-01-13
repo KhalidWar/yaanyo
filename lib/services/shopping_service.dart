@@ -9,7 +9,7 @@ class ShoppingService {
       .doc(FirebaseAuth.instance.currentUser.uid)
       .collection('shoppingGrid');
 
-  Future<void> createNewShoppingGrid({ShoppingGrid shoppingGrid}) async {
+  Future<void> createNewShoppingGrid(ShoppingGrid shoppingGrid) async {
     _shoppingGrid.doc(shoppingGrid.storeName).set(shoppingGrid.toJson());
   }
 
@@ -18,7 +18,7 @@ class ShoppingService {
   }
 
   Future<void> addShoppingTask(
-      {String storeName, ShoppingTask shoppingTask}) async {
+      String storeName, ShoppingTask shoppingTask) async {
     _shoppingGrid
         .doc(storeName)
         .collection('shoppingTask')
@@ -44,7 +44,7 @@ class ShoppingService {
   }
 
   Future<void> deleteShoppingGrid(
-      {String storeName, List<String> gridTasksList}) async {
+      String storeName, List<String> gridTasksList) async {
     /// deletes shoppingGrid document but does not delete its
     /// subcollections (shoppingTasks)
     /// https://firebase.google.com/docs/firestore/manage-data/delete-data
@@ -62,41 +62,16 @@ class ShoppingService {
   }
 
   Future<void> updateShoppingGrid(
-      {String storeName, ShoppingGrid shoppingGrid}) async {
+      String storeName, ShoppingGrid shoppingGrid) async {
     await _shoppingGrid.doc(storeName).get().then((doc) {
       Map<String, dynamic> newData = {};
+
       if (doc.exists) {
         newData
           ..addAll(doc.data())
           ..update('storeName', (value) => shoppingGrid.storeName);
-        _shoppingGrid.doc(shoppingGrid.storeName).set(newData);
+        _shoppingGrid.doc(shoppingGrid.storeName).set(shoppingGrid.toJson());
       }
     });
-
-    await _shoppingGrid
-        .doc(storeName)
-        .collection('shoppingTask')
-        .get()
-        .then((value) {
-      for (var task in value.docs) {
-        final shoppingTask = ShoppingTask(
-            taskLabel: task['taskLabel'],
-            isDone: task['isDone'],
-            time: task['time']);
-        _shoppingGrid
-            .doc(shoppingGrid.storeName)
-            .collection('shoppingTask')
-            .doc(shoppingTask.taskLabel)
-            .set(shoppingTask.toJson())
-            .whenComplete(() {
-          _shoppingGrid
-              .doc(storeName)
-              .collection('shoppingTask')
-              .doc('${task['taskLabel']}')
-              .delete();
-        });
-      }
-    });
-    _shoppingGrid.doc(storeName).delete();
   }
 }

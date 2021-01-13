@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaanyo/screens/settings/settings_screen.dart';
 import 'package:yaanyo/screens/shopping/shopping_task_screen.dart';
+import 'package:yaanyo/state_management/create_grid_state_manager.dart';
 import 'package:yaanyo/state_management/providers.dart';
 import 'package:yaanyo/state_management/shopping_task_state_manager.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';
@@ -97,6 +98,12 @@ class HomeScreen extends ConsumerWidget {
         );
       },
       openBuilder: (context, openWidget) {
+        final createGridProvider = context.read(createGridStateManagerProvider);
+
+        createGridProvider.gridColor = null;
+        createGridProvider.storeName = null;
+        createGridProvider.storeIcon = null;
+
         return CreateNewGridBox();
       },
     );

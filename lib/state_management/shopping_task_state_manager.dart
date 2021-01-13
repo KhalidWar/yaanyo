@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:yaanyo/models/shopping_task.dart';
 import 'package:yaanyo/screens/shopping/create_new_grid_box.dart';
+import 'package:yaanyo/state_management/create_grid_state_manager.dart';
 import 'package:yaanyo/state_management/providers.dart';
 
 final shoppingTaskManagerProvider =
@@ -29,7 +30,7 @@ class ShoppingTaskManager extends ChangeNotifier {
           taskLabel: taskLabel, isDone: false, time: Timestamp.now());
       context
           .read(shoppingServiceProvider)
-          .addShoppingTask(storeName: storeName, shoppingTask: shoppingTask);
+          .addShoppingTask(storeName, shoppingTask);
     }
   }
 
@@ -48,11 +49,14 @@ class ShoppingTaskManager extends ChangeNotifier {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return CreateNewGridBox(
-            gridColor: gridColor,
-            storeName: storeName,
-            storeIcon: storeIcon,
-          );
+          final createGridProvider =
+              context.read(createGridStateManagerProvider);
+
+          createGridProvider.gridColor = gridColor;
+          createGridProvider.storeName = storeName;
+          createGridProvider.storeIcon = storeIcon;
+
+          return CreateNewGridBox();
         },
       ),
     );
@@ -70,10 +74,9 @@ class ShoppingTaskManager extends ChangeNotifier {
             ElevatedButton(
               child: Text('Yes'),
               onPressed: () {
-                context.read(shoppingServiceProvider).deleteShoppingGrid(
-                      storeName: storeName,
-                      gridTasksList: gridTasksList,
-                    );
+                context
+                    .read(shoppingServiceProvider)
+                    .deleteShoppingGrid(storeName, gridTasksList);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
