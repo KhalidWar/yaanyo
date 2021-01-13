@@ -59,8 +59,7 @@ class AuthStateManager extends ChangeNotifier {
       _setIsLoading(true);
       await context
           .read(authServiceProvider)
-          .signUpWithEmailAndPassword(
-              name: _name, email: _email, password: _password)
+          .signUpWithEmailAndPassword(_name, _email, _password)
           .then((value) {
         _setIsLoading(false);
         _setError(value);

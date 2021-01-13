@@ -11,7 +11,6 @@ import 'package:yaanyo/widgets/alert_widget.dart';
 final shoppingTaskStream = StreamProvider.autoDispose<QuerySnapshot>(
   (ref) {
     final storeName = ref.read(shoppingTaskManagerProvider).storeName;
-
     return ref.read(shoppingServiceProvider).getShoppingTaskStream(storeName);
   },
 );
@@ -73,11 +72,7 @@ class ShoppingTaskScreen extends ConsumerWidget {
                     final docs = data.docs;
 
                     if (docs.isEmpty) {
-                      return AlertWidget(
-                        lottie: 'assets/lottie/taskCompleted.json',
-                        label: 'No Tasks at hand',
-                        lottieHeight: MediaQuery.of(context).size.height * 0.35,
-                      );
+                      return buildEmptyTasksWidget(context);
                     }
 
                     List<Map<String, dynamic>> checkedTaskList = [];
@@ -92,53 +87,52 @@ class ShoppingTaskScreen extends ConsumerWidget {
                       }
                     }
 
-                    return ListView.builder(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      shrinkWrap: true,
-                      itemCount: toggleCheckedTaskList
-                          ? checkedTaskList.length
-                          : uncheckedTaskList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final data = toggleCheckedTaskList
-                            ? checkedTaskList[index]
-                            : uncheckedTaskList[index];
-                        return Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.reorder_rounded,
-                              color: Colors.black45,
-                            ),
-                            Checkbox(
-                              visualDensity: VisualDensity.compact,
-                              activeColor: Colors.black54,
-                              value: data['isDone'],
-                              onChanged: (toggle) {
-                                toggleShoppingTask(
-                                  context,
-                                  toggle,
-                                  data['taskLabel'],
-                                  storeName,
-                                );
-                              },
-                            ),
-                            Expanded(
-                              child: Text(
-                                data['taskLabel'],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(
-                                      decoration: data['isDone']
-                                          ? TextDecoration.lineThrough
-                                          : TextDecoration.none,
+                    final toggledList = toggleCheckedTaskList
+                        ? checkedTaskList
+                        : uncheckedTaskList;
+
+                    return toggledList.isEmpty
+                        ? buildEmptyTasksWidget(context)
+                        : ListView.separated(
+                            separatorBuilder: (context, index) =>
+                                Divider(height: 1),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            shrinkWrap: true,
+                            itemCount: toggledList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Row(
+                                children: <Widget>[
+                                  Checkbox(
+                                    visualDensity: VisualDensity.compact,
+                                    activeColor: Colors.black54,
+                                    value: toggledList[index]['isDone'],
+                                    onChanged: (toggle) {
+                                      toggleShoppingTask(
+                                        context,
+                                        toggle,
+                                        toggledList[index]['taskLabel'],
+                                        storeName,
+                                      );
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      toggledList[index]['taskLabel'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .copyWith(
+                                            decoration: toggledList[index]
+                                                    ['isDone']
+                                                ? TextDecoration.lineThrough
+                                                : TextDecoration.none,
+                                          ),
                                     ),
-                              ),
-                            ),
-                            SizedBox(width: 1),
-                          ],
-                        );
-                      },
-                    );
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                   },
                   error: ((error, stackTrace) {
                     return AlertWidget(
@@ -196,6 +190,14 @@ class ShoppingTaskScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  AlertWidget buildEmptyTasksWidget(BuildContext context) {
+    return AlertWidget(
+      lottie: 'assets/lottie/check.json',
+      label: 'All done.',
+      lottieHeight: MediaQuery.of(context).size.height * 0.3,
     );
   }
 

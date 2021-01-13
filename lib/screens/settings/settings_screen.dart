@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yaanyo/services/user_database_service.dart';
+import 'package:yaanyo/services/user_service.dart';
 import 'package:yaanyo/state_management/settings_state_manager.dart';
 import 'package:yaanyo/utilities/form_validator.dart';
 import 'package:yaanyo/widgets/alert_widget.dart';

@@ -59,7 +59,7 @@ class SignInScreen extends ConsumerWidget {
                               FormValidator().authEmailField(input),
                           textInputAction: TextInputAction.next,
                           decoration: kTextFormInputDecoration.copyWith(
-                            hintText: 'Email',
+                            labelText: 'Email',
                           ),
                           onChanged: (input) => setEmail(input),
                         ),
@@ -72,7 +72,7 @@ class SignInScreen extends ConsumerWidget {
                           onFieldSubmitted: (value) =>
                               signIn(context, _formKey),
                           decoration: kTextFormInputDecoration.copyWith(
-                              hintText: 'Password'),
+                              labelText: 'Password'),
                           onChanged: (input) => setPassword(input),
                         ),
                         SizedBox(height: size.height * 0.03),

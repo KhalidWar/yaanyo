@@ -50,7 +50,7 @@ class HomeScreen extends ConsumerWidget {
                 final gridData = data.docs[index].data();
 
                 if (data.docs.isEmpty) {
-                  return AlertWidget(lottie: 'assets/lottie/emptyBag.json');
+                  return AlertWidget(lottie: 'assets/lottie/check.json');
                 }
 
                 return OpenContainer(
@@ -117,8 +117,12 @@ class HomeScreen extends ConsumerWidget {
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SettingsScreen(),
+              ),
+            );
           },
         ),
       ],

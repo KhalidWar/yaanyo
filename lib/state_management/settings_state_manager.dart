@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:yaanyo/services/user_database_service.dart';
+import 'package:yaanyo/services/user_service.dart';
 import 'package:yaanyo/state_management/providers.dart';
 
 final settingsManagerProvider =

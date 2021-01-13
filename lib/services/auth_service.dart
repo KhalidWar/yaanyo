@@ -1,8 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:yaanyo/models/app_user.dart';
-
-import '../constants.dart';
-import 'user_database_service.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -21,18 +17,10 @@ class AuthService {
   }
 
   Future<String> signUpWithEmailAndPassword(
-      {String email, String password, String name}) async {
+      String email, String password, String name) async {
     try {
-      await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) async {
-        final appUser = AppUser(
-            name: name,
-            email: email,
-            uid: value.user.uid,
-            profilePic: kDefaultProfilePic);
-        await UserService().addUserToDatabase(appUser: appUser);
-      });
+      await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
       return null;
     } catch (e) {
       return e.message;

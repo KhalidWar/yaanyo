@@ -46,6 +46,7 @@ class AlertWidget extends StatelessWidget {
                           lottie,
                           height: lottieHeight,
                           fit: BoxFit.fitHeight,
+                          repeat: false,
                         ),
                   label == null
                       ? Container()

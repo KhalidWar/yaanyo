@@ -2,22 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:yaanyo/models/app_user.dart';
 
 final userServiceProvider =
     ChangeNotifierProvider<UserService>((ref) => UserService());
 
 class UserService extends ChangeNotifier {
-  final CollectionReference _usersCollection =
-      FirebaseFirestore.instance.collection('users');
-
-  Future addUserToDatabase({AppUser appUser}) async {
-    return await _usersCollection.doc(appUser.email).set(appUser.toJson());
-  }
-
-  Future<QuerySnapshot> searchUserByEmail(String email) async {
-    return await _usersCollection.where('email', isEqualTo: email).get();
-  }
+  final _usersCollection = FirebaseFirestore.instance.collection('users');
 
   Stream<QuerySnapshot> getCurrentUserStream() {
     final currentUserEmail = FirebaseAuth.instance.currentUser.email;

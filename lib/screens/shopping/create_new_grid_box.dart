@@ -59,6 +59,7 @@ class CreateNewGridBox extends ConsumerWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  SizedBox(height: 6),
                   storeName == null
                       ? Form(
                           key: _formKey,
@@ -69,9 +70,7 @@ class CreateNewGridBox extends ConsumerWidget {
                             textInputAction: TextInputAction.next,
                             textCapitalization: TextCapitalization.words,
                             decoration: kTextFormInputDecoration.copyWith(
-                              hintText: storeName == null
-                                  ? 'Enter Grid Name'
-                                  : storeName,
+                              labelText: 'Enter Grid Name',
                             ),
                           ),
                         )
