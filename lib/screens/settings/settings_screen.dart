@@ -81,8 +81,8 @@ class SettingsScreen extends ConsumerWidget {
                 Container(
                   width: double.infinity,
                   height: size.height * 0.06,
-                  child: RaisedButton(
-                    color: Colors.red,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.red),
                     child: Text(
                       'Log Out',
                       style: Theme.of(context).textTheme.headline5.copyWith(
@@ -129,7 +129,7 @@ class SettingsScreen extends ConsumerWidget {
           ],
         ),
         actions: [
-          RaisedButton(
+          ElevatedButton(
               child: Text('Update name'),
               onPressed: () {
                 updateName(
@@ -139,7 +139,7 @@ class SettingsScreen extends ConsumerWidget {
                 );
                 _textEditingController.clear();
               }),
-          RaisedButton(
+          ElevatedButton(
             child: Text('Cancel'),
             onPressed: () => Navigator.pop(context),
           ),

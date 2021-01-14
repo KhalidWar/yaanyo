@@ -22,7 +22,8 @@ class AlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor:
           scaffoldColor == null ? Colors.transparent : scaffoldColor,
@@ -48,6 +49,7 @@ class AlertWidget extends StatelessWidget {
                           fit: BoxFit.fitHeight,
                           repeat: false,
                         ),
+                  SizedBox(height: 20),
                   label == null
                       ? Container()
                       : Text(
@@ -63,10 +65,12 @@ class AlertWidget extends StatelessWidget {
             ),
             buttonLabel == null
                 ? Container()
-                : RaisedButton(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.2,
-                      vertical: 20,
+                : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: size.width * 0.2,
+                        vertical: 20,
+                      ),
                     ),
                     child: Text(
                       buttonLabel,

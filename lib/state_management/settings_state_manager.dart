@@ -23,14 +23,15 @@ class SettingsStateManager extends ChangeNotifier {
         return AlertDialog(
           content: Text('Are you sure you want to sign out?'),
           actions: [
-            FlatButton(
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: Colors.red),
                 child: Text('Yes'),
                 onPressed: () {
                   context.read(authServiceProvider).signOut();
                   Navigator.pop(context);
                   Navigator.pop(context);
                 }),
-            FlatButton(
+            ElevatedButton(
               child: Text('No'),
               onPressed: () => Navigator.pop(context),
             )

@@ -82,7 +82,7 @@ class SignInScreen extends ConsumerWidget {
                             color: Colors.blue[500],
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                           ),
-                          child: FlatButton(
+                          child: TextButton(
                             onPressed: () => signIn(context, _formKey),
                             child: isLoading ?? false
                                 ? CircularProgressIndicator(

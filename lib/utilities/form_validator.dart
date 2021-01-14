@@ -28,10 +28,16 @@ class FormValidator {
   }
 
   String authEmailField(String input) {
+    final pattern = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
+    final regExp = RegExp(pattern);
+
     if (input.isEmpty) {
-      return 'Provide a valid email';
+      return 'Enter an email';
+    } else if (!regExp.hasMatch(input)) {
+      return 'Enter a valid email';
+    } else {
+      return null;
     }
-    return null;
   }
 
   String authPasswordField(String input) {

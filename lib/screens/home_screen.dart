@@ -37,45 +37,47 @@ class HomeScreen extends ConsumerWidget {
           child: Scaffold(
             appBar: buildAppBar(context),
             floatingActionButton: buildFloatingActionButton(),
-            body: GridView.builder(
-              itemCount: data.docs.length,
-              padding: EdgeInsets.all(8),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-              ),
-              itemBuilder: (context, index) {
-                final gridData = data.docs[index].data();
+            body: data.docs.isEmpty
+                ? AlertWidget(
+                    lottie: 'assets/lottie/check.json',
+                    label: 'No Tasks Found\nStart by adding tasks',
+                    lottieHeight: MediaQuery.of(context).size.height * 0.3,
+                  )
+                : GridView.builder(
+                    itemCount: data.docs.length,
+                    padding: EdgeInsets.all(8),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.7,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                    ),
+                    itemBuilder: (context, index) {
+                      final gridData = data.docs[index].data();
 
-                if (data.docs.isEmpty) {
-                  return AlertWidget(lottie: 'assets/lottie/check.json');
-                }
+                      return OpenContainer(
+                        closedElevation: 5,
+                        closedColor: kGridColorList[gridData['gridColorInt']],
+                        closedShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        closedBuilder: (context, closedWidget) {
+                          return GridBox(
+                            storeName: gridData['storeName'],
+                            storeIcon: gridData['storeIcon'],
+                          );
+                        },
+                        openBuilder: (context, openWidget) {
+                          shoppingTaskManager.storeName = gridData['storeName'];
+                          shoppingTaskManager.storeIcon = gridData['storeIcon'];
+                          shoppingTaskManager.gridColor =
+                              kGridColorList[gridData['gridColorInt']];
 
-                return OpenContainer(
-                  closedElevation: 5,
-                  closedColor: kGridColorList[gridData['gridColorInt']],
-                  closedShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                          return ShoppingTaskScreen();
+                        },
+                      );
+                    },
                   ),
-                  closedBuilder: (context, closedWidget) {
-                    return GridBox(
-                      storeName: gridData['storeName'],
-                      storeIcon: gridData['storeIcon'],
-                    );
-                  },
-                  openBuilder: (context, openWidget) {
-                    shoppingTaskManager.storeName = gridData['storeName'];
-                    shoppingTaskManager.storeIcon = gridData['storeIcon'];
-                    shoppingTaskManager.gridColor =
-                        kGridColorList[gridData['gridColorInt']];
-
-                    return ShoppingTaskScreen();
-                  },
-                );
-              },
-            ),
           ),
         );
       },

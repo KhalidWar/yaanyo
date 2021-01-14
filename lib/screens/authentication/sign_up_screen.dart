@@ -100,7 +100,7 @@ class SignUpScreen extends ConsumerWidget {
                       decoration: BoxDecoration(
                           color: Colors.blue[500],
                           borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () => signUp(context, _formKey),
                         child: isLoading ?? false
                             ? CircularProgressIndicator(
