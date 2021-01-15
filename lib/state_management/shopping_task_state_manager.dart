@@ -36,7 +36,11 @@ class ShoppingTaskManager extends ChangeNotifier {
 
   Future<void> toggleShoppingTask(BuildContext context, bool toggle,
       String taskLabel, String storeName) async {
-    final shoppingTask = ShoppingTask(isDone: toggle, taskLabel: taskLabel);
+    final shoppingTask = ShoppingTask(
+      isDone: toggle,
+      taskLabel: taskLabel,
+      time: Timestamp.now(),
+    );
 
     await context
         .read(shoppingServiceProvider)
