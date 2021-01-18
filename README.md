@@ -2,14 +2,6 @@
 Real time chat and shopping checklist made with flutter utilizing Firebase and Cloud Firestore as backend.
 
 
-## Announcement
-I've decided to break this project into 2 smaller ones.
-1) Shopping To-do has taken over this repo.
-2) Old Yaanyo with chat, shopping, and profile tabs can be found under chat branch of this repo.
- 
-But why? Because it was a bad idea to combine both from the beginning.
-
-
 ## Screenshots
 <img src="readme_assets/sign_in.jpg" width="200"> <img src="readme_assets/chat_tab_empty.jpg" width="200"> <img src="readme_assets/start_new_chat.jpg" width="200"> <img src="readme_assets/chat_screen.jpg" width="200"> <img src="readme_assets/profile_tab.jpg" width="200">
 <img src="readme_assets/chat_tab.jpg" width="200"> <img src="readme_assets/chat_screen_reply.jpg" width="200">
